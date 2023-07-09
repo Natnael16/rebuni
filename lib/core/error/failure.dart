@@ -6,8 +6,20 @@ abstract class Failure extends Equatable {
 }
 
 // General failures
-class ServerFailure extends Failure {}
+class ServerFailure extends Failure {
+  final String errorMessage;
 
-class CacheFailure extends Failure {}
+  ServerFailure(this.errorMessage);
+}
 
-class NetworkFailure extends Failure {}
+class CacheFailure extends Failure {
+  final String errorMessage;
+
+  CacheFailure(this.errorMessage);
+}
+
+class NetworkFailure extends Failure {
+  final String errorMessage;
+
+  NetworkFailure(this.errorMessage);
+}
