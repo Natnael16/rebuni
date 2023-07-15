@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failure.dart';
-import '../../domain/entity/user.dart';
 import '../../domain/repository/sign_is_repository.dart';
+import '../datasource/supabase_data_source.dart';
 import '../model/user_model.dart';
 
 class UserRepositoryImpl implements UserRepository {
@@ -11,16 +13,11 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl(this.supabaseDataSource);
 
   @override
-  Future<Either<Failure, User>> signIn(String phoneNumber) async {
+  Future<Either<Failure, bool>> signIn(String phoneNumber) async {
     try {
-      final UserModel? userModel = await supabaseDataSource.signIn(phoneNumber);
-      if (userModel != null) {
-        final User user = User(
-          id: userModel.id,
-          phoneNumber: userModel.phoneNumber,
-          isFirstTimeUser: userModel.isFirstTimeUser,
-        );
-        return Right(user);
+      final status = await supabaseDataSource.signIn(phoneNumber);
+      if (status == true) {
+        return const Right(true);
       } else {
         return Left(ServerFailure('User not found'));
       }
@@ -29,4 +26,48 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, bool>> verifyOTP(
+      String phoneNumber, String otp) async {
+    try {
+      final status = await supabaseDataSource.verifyOTP(phoneNumber, otp);
+      if (status == true) {
+        return const Right(true);
+      } else {
+        return Left(ServerFailure('Server error'));
+      }
+    } catch (e) {
+      return Left(ServerFailure('Sign-in failed: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> signUp(
+      String firstName, String? bio, File? profile) async {
+    try {
+      final status = await supabaseDataSource.signUp(firstName, bio, profile);
+      print(status);
+      if (status == true) {
+        return const Right(true);
+      } else {
+        return Left(ServerFailure('Sign-in failed'));
+      }
+    } catch (e) {
+      return Left(ServerFailure('Sign-in failed: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> isFirstTime() async {
+    try {
+      final respose = await supabaseDataSource.isFirstTime();
+      if (respose == true) {
+        return const Right(true);
+      } else {
+        return Left(ServerFailure('Server error'));
+      }
+    } catch (e) {
+      return Left(ServerFailure("Is not first time user"));
+    }
+  }
 }

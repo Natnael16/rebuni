@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../../../core/routes/paths.dart' as path;
+import '../../../../core/shared_widgets/custom_loading_widget.dart';
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/images.dart';
 import '../../../../core/utils/validators.dart';
+import '../bloc/sign_in_bloc/sign_in_bloc.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_providers_button.dart';
 import '../widgets/custom_textfield.dart';
@@ -44,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: [
                   CustomTextField(
-                    hintText:"Phone Number",
+                    hintText: "Phone Number",
                     textEditingController: _phoneEditingController,
                     validator: validatePhoneNumber,
                     borderRadius: 5,
@@ -52,24 +55,35 @@ class _LoginPageState extends State<LoginPage> {
                     isNumber: true,
                   ),
                   SizedBox(height: 8.h),
-                  CustomButton(
-                    borderRadius: 4,
-                    buttonText: "Sign in",
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() == true) {
-                        if (_phoneEditingController.text == "" || validatePhoneNumber(_phoneEditingController.text) != null) {
-                          return;
-                        }
-                      
-                        // Perform login logic if the form is valid
-                        context.push(path.otp, extra: {
-                          'otpMatch': '696447',
-                          'phoneNumber': _phoneEditingController.text,
-                          'isFirstTimeUser': true
-                        });
-                      }
-                    },
-                  ),
+                  BlocConsumer<SignInBloc, SignInState>(
+                      builder: (context, SignInState state) {
+                    if (state is SignInLoading) {
+                      return UniqueProgressIndicator();
+                    } else {
+                      return CustomButton(
+                        borderRadius: 4,
+                        buttonText: "Sign in",
+                        onPressed: () {
+                          if (_formKey.currentState?.validate() == true) {
+                            if (_phoneEditingController.text == "" ||
+                                validatePhoneNumber(
+                                        _phoneEditingController.text) !=
+                                    null) {
+                              return;
+                            }
+                            BlocProvider.of<SignInBloc>(context)
+                                .add(SignInClick(_phoneEditingController.text));
+                          }
+                        },
+                      );
+                    }
+                  }, listener: (context, SignInState state) {
+                    if (state is SignInSuccess) {
+                      context.push(path.otp, extra: {
+                        'phoneNumber': _phoneEditingController.text,
+                      });
+                    }
+                  }),
                 ],
               ),
             ),
@@ -87,7 +101,9 @@ class _LoginPageState extends State<LoginPage> {
                 width: 7.w,
                 image: AssetImage(googleLogoImage),
               ),
-              onPressed: () {},
+              onPressed: () {
+                context.push(path.otp, extra: {'phoneNumber': '+251961088592'});
+              },
             ),
             SizedBox(height: 2.h),
             ProviderButtons(

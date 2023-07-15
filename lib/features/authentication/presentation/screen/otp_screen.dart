@@ -1,39 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rebuni/core/shared_widgets/custom_loading_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
+import '../../../../core/injections/injection_container.dart';
 import '../../../../core/routes/paths.dart' as path;
+import '../../../../core/usecases/usecase.dart';
 import '../../../../core/utils/colors.dart';
+import '../../domain/use_cases/check_first_time_login_use_case.dart';
+import '../bloc/otp_bloc/otp_bloc_bloc.dart';
+import '../bloc/sign_in_bloc/sign_in_bloc.dart';
 import '../widgets/custom_button.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OTPScreen extends StatefulWidget {
-  final String otpMatch;
-  final bool isFirstTimeUser;
   final String phoneNumber;
 
-  const OTPScreen(
-      {Key? key,
-      required this.otpMatch,
-      required this.isFirstTimeUser,
-      required this.phoneNumber})
-      : super(key: key);
+  const OTPScreen({Key? key, required this.phoneNumber}) : super(key: key);
 
   @override
   _OTPScreenState createState() => _OTPScreenState();
 }
 
 class _OTPScreenState extends State<OTPScreen> {
-  int duration = 120;
-  int _endTime = DateTime.now().millisecondsSinceEpoch +
-      (2 * 60 * 1000); // Initial end time
-  bool get isTimerRunning => _endTime > DateTime.now().millisecondsSinceEpoch;
+  final _otpController = TextEditingController();
+  int duration = 10;
+  int _endTime =
+      DateTime.now().millisecondsSinceEpoch + (10 * 1000); // Initial end time
+  bool get isTimerRunning => DateTime.now().millisecondsSinceEpoch <= _endTime;
+  bool showResend = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: white,
         leading: InkWell(
             onTap: () {
               Navigator.pop(context);
@@ -46,7 +49,7 @@ class _OTPScreenState extends State<OTPScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 21.h),
+              SizedBox(height: 10.h),
               Text(
                 'Enter OTP',
                 style: TextStyle(
@@ -63,14 +66,9 @@ class _OTPScreenState extends State<OTPScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4.w),
                 child: PinCodeTextField(
+                  controller: _otpController,
                   appContext: context,
                   length: 6,
-                  onChanged: (value) {
-                    // Handle OTP code changes here
-                    if (value.length == 6) {
-                      context.push(path.signUp);
-                    }
-                  },
                   pinTheme: PinTheme(
                     shape: PinCodeFieldShape.box,
                     activeColor: primaryColor,
@@ -79,7 +77,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     disabledColor: Colors.grey,
                     borderRadius: BorderRadius.circular(4),
                     activeFillColor: textFieldColor,
-                    fieldHeight: 5.h,
+                    fieldHeight: 7.h,
                     fieldWidth: 10.w,
                     inactiveFillColor: textFieldColor,
                     selectedFillColor: textFieldColor,
@@ -88,12 +86,29 @@ class _OTPScreenState extends State<OTPScreen> {
                 ),
               ),
               SizedBox(height: 5.h),
-              Center(
-                child: CustomButton(
-                  buttonText: "Continue",
-                  borderRadius: 4,
-                ),
-              ),
+              BlocConsumer<OtpBlocBloc, OtpBlocState>(
+                  builder: (context, state) {
+                if (state is VerifyOtpLoading) {
+                  return Center(child: UniqueProgressIndicator());
+                } else {
+                  return Center(
+                    child: CustomButton(
+                      onPressed: () {
+                        if (_otpController.text.length == 6) {
+                          BlocProvider.of<OtpBlocBloc>(context).add(VerifyOTP(
+                              _otpController.text, widget.phoneNumber));
+                        }
+                      },
+                      buttonText: "Continue",
+                      borderRadius: 4,
+                    ),
+                  );
+                }
+              }, listener: (context, state) {
+                if (state is VerifyOtpSuccess) {
+                  isFirstTimeUser();
+                }
+              }),
               SizedBox(height: 8.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -103,40 +118,50 @@ class _OTPScreenState extends State<OTPScreen> {
                   CountdownTimer(
                     endTime: _endTime,
                     textStyle: Theme.of(context).textTheme.labelSmall,
+                    endWidget: Text("00 : 00 : 00",
+                        style: Theme.of(context).textTheme.labelSmall),
                     onEnd: () {
-                      // Timer ended, perform desired actions
+                      setState(() {
+                        showResend = true;
+                        print(isTimerRunning);
+                      });
                     },
                   ),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 24.w, maxHeight: 4.h),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(secondaryColor),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4.0),
+                  showResend
+                      ? ConstrainedBox(
+                          constraints:
+                              BoxConstraints(maxWidth: 24.w, maxHeight: 4.h),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  primaryColor),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.0),
+                                ),
+                              ),
+                            ),
+                            onPressed: isTimerRunning
+                                ? null
+                                : () {
+                                    print("resend");
+                                    setState(() {
+                                      _endTime = DateTime.now()
+                                              .millisecondsSinceEpoch +
+                                          (duration * 1000);
+                                      BlocProvider.of<SignInBloc>(context)
+                                          .add(SignInClick(widget.phoneNumber));
+                                    });
+                                  },
+                            child: Text('Resend',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge!
+                                    .copyWith(fontSize: 14.sp, color: white)),
                           ),
-                        ),
-                      ),
-                      onPressed: isTimerRunning
-                          ? null
-                          : () {
-                              setState(() {
-                                _endTime =
-                                    DateTime.now().millisecondsSinceEpoch +
-                                        (duration * 1000);
-                                //! add bloc event
-                              });
-                            },
-                      child: Text('Resend',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelLarge!
-                              .copyWith(fontSize: 14.sp, color: white)),
-                    ),
-                  ),
+                        )
+                      : SizedBox(width: 8.w)
                 ],
               ),
             ],
@@ -144,5 +169,15 @@ class _OTPScreenState extends State<OTPScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> isFirstTimeUser() async {
+    final firstTimeUseCase = FirstTimeUseCase(getIt());
+
+    final isFirstTime = await firstTimeUseCase(NoParams());
+
+    isFirstTime.fold((failure) => context.push(path.signUp), (success) {
+      success ? context.go(path.home) : context.push(path.signUp);
+    });
   }
 }

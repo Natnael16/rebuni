@@ -12,24 +12,24 @@ class ProviderButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      child: Container(
-        width: 85.w,
-        height: 7.h,
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 3,
-              offset: const Offset(0, 2), // changes position of shadow
-            )
-          ],
-          borderRadius: BorderRadius.circular(5),
-          color: white,
-        ),
+    return Container(
+      width: 85.w,
+      height: 7.h,
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 3,
+            offset: const Offset(0, 2), // changes position of shadow
+          )
+        ],
+        borderRadius: BorderRadius.circular(5),
+        color: white,
+      ),
+      child: InkWell(
+        onTap: onPressed,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

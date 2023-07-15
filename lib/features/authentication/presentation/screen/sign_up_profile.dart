@@ -1,10 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rebuni/core/shared_widgets/custom_loading_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../../../core/routes/paths.dart' as path;
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/validators.dart';
+import '../bloc/sign_up_bloc/sign_up_bloc.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_textfield.dart';
 import 'package:image_picker/image_picker.dart';
@@ -58,8 +63,8 @@ class _SignUpState extends State<SignUp> {
                   children: [
                     Stack(children: [
                       Container(
-                          width: 24.w,
-                          height: 11.h,
+                          width: 100,
+                          height: 100,
                           decoration: const ShapeDecoration(
                             color: Color(0xFFF1F3FC),
                             shape: OvalBorder(),
@@ -75,13 +80,14 @@ class _SignUpState extends State<SignUp> {
                         child: InkWell(
                           onTap: _getImage,
                           child: Container(
-                              width: 6.7.w,
-                              height: 3.h,
+                              width: 25,
+                              height: 25,
                               decoration: const ShapeDecoration(
                                 color: secondaryColor,
                                 shape: OvalBorder(),
                               ),
-                              child: Icon(Icons.add, color: white)),
+                              child:
+                                  Center(child: Icon(Icons.add, color: white))),
                         ),
                       ),
                     ]),
@@ -131,20 +137,34 @@ class _SignUpState extends State<SignUp> {
             SizedBox(
               height: 4.h,
             ),
-            CustomButton(
-              borderRadius: 4,
-              buttonText: "Complete profile",
-              onPressed: () {
-                if (_formKey.currentState?.validate() == true) {
-                  if (_fullNameEditingController.text == "" ||
-                      validateFullName(_fullNameEditingController.text) !=
-                          null) {
-                    return;
+            BlocConsumer<SignUpBloc, SignUpState>(builder: (context, state) {
+              print(state);
+              if (state is SignUpLoading) {
+                return UniqueProgressIndicator();
+              }
+
+              return CustomButton(
+                borderRadius: 4,
+                buttonText: "Complete profile",
+                onPressed: () {
+                  if (_formKey.currentState?.validate() == true) {
+                    if (_fullNameEditingController.text == "" ||
+                        validateFullName(_fullNameEditingController.text) !=
+                            null) {
+                      return;
+                    }
+                    BlocProvider.of<SignUpBloc>(context).add(CompleteProfile(
+                        fullName: _fullNameEditingController.text,
+                        bio: _bioEditingController.text,
+                        profilePicture: image));
                   }
-                  print("passed");
-                }
-              },
-            ),
+                },
+              );
+            }, listener: (context, state) {
+              if (state is SignUpSuccess) {
+                context.go(path.home);
+              }
+            })
           ]),
         ),
       ),
