@@ -29,7 +29,7 @@ class _OTPScreenState extends State<OTPScreen> {
   int duration = 10;
   int _endTime =
       DateTime.now().millisecondsSinceEpoch + (10 * 1000); // Initial end time
-  bool get isTimerRunning => DateTime.now().millisecondsSinceEpoch <= _endTime;
+  bool get isTimerRunning => DateTime.now().millisecondsSinceEpoch < _endTime;
   bool showResend = false;
 
   @override
@@ -77,7 +77,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     disabledColor: Colors.grey,
                     borderRadius: BorderRadius.circular(4),
                     activeFillColor: textFieldColor,
-                    fieldHeight: 7.h,
+                    fieldHeight: 54,
                     fieldWidth: 10.w,
                     inactiveFillColor: textFieldColor,
                     selectedFillColor: textFieldColor,
@@ -85,7 +85,7 @@ class _OTPScreenState extends State<OTPScreen> {
                   keyboardType: TextInputType.number,
                 ),
               ),
-              SizedBox(height: 5.h),
+              SizedBox(height: 4.h),
               BlocConsumer<OtpBlocBloc, OtpBlocState>(
                   builder: (context, state) {
                 if (state is VerifyOtpLoading) {
@@ -142,18 +142,18 @@ class _OTPScreenState extends State<OTPScreen> {
                                 ),
                               ),
                             ),
-                            onPressed: isTimerRunning
-                                ? null
-                                : () {
-                                    print("resend");
-                                    setState(() {
-                                      _endTime = DateTime.now()
-                                              .millisecondsSinceEpoch +
-                                          (duration * 1000);
-                                      BlocProvider.of<SignInBloc>(context)
-                                          .add(SignInClick(widget.phoneNumber));
-                                    });
-                                  },
+                            onPressed: () {
+                              if (isTimerRunning) {
+                                return;
+                              }
+                              setState(() {
+                                _endTime =
+                                    DateTime.now().millisecondsSinceEpoch +
+                                        (duration * 1000);
+                                BlocProvider.of<SignInBloc>(context)
+                                    .add(SignInClick(widget.phoneNumber));
+                              });
+                            },
                             child: Text('Resend',
                                 style: Theme.of(context)
                                     .textTheme

@@ -43,9 +43,9 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<Either<Failure, bool>> signUp(
-      String firstName, String? bio, File? profile) async {
+      String firstName, String? bio, File? profile,String? profileUrl) async {
     try {
-      final status = await supabaseDataSource.signUp(firstName, bio, profile);
+      final status = await supabaseDataSource.signUp(firstName, bio, profile,profileUrl);
       print(status);
       if (status == true) {
         return const Right(true);
@@ -64,10 +64,24 @@ class UserRepositoryImpl implements UserRepository {
       if (respose == true) {
         return const Right(true);
       } else {
+        return Left(ServerFailure('Is not first time user'));
+      }
+    } catch (e) {
+      return Left(ServerFailure("Server error: $e"));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, bool>> providerSignIn(String provider) async {
+    try {
+      final respose = await supabaseDataSource.providerSignIn(provider);
+      if (respose == true) {
+        return const Right(true);
+      } else {
         return Left(ServerFailure('Server error'));
       }
     } catch (e) {
-      return Left(ServerFailure("Is not first time user"));
+      return Left(ServerFailure("Sign in failed : $e"));
     }
   }
 }

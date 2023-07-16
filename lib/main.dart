@@ -9,6 +9,7 @@ import 'core/utils/bloc_providers.dart';
 
 void main() async {
   await Supabase.initialize(
+    authFlowType: AuthFlowType.pkce,
     url: 'https://tsqjnitbmizfrmcfjrmb.supabase.co',
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzcWpuaXRibWl6ZnJtY2Zqcm1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODUzNjQ1MDMsImV4cCI6MjAwMDk0MDUwM30.mzdsQhWN8cCSXy0mXBOATV6tTnevL-xgAAg3vLrUmlU',

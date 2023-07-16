@@ -17,9 +17,10 @@ class SignUpUseCase implements UseCase<bool, SignUpParams> {
     final name = params.fullName;
     final bio = params.bio;
     final pic = params.profilePicture;
+    final profileUrl = params.profileUrl;
     // Sign in the user
     final Either<Failure, bool> signUpResult =
-        await userRepository.signUp(name, bio, pic);
+        await userRepository.signUp(name, bio, pic,profileUrl);
     return signUpResult;
   }
 }
@@ -28,6 +29,8 @@ class SignUpParams {
   final String fullName;
   final String? bio;
   final File? profilePicture;
+  final String? profileUrl;
 
-  SignUpParams({required this.fullName, this.bio, this.profilePicture});
+  SignUpParams(
+      {required this.fullName, this.bio, this.profilePicture, this.profileUrl});
 }

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/error/failure.dart';
-import '../../../domain/use_cases/sign_up_usecase.dart';
+import '../../../domain/use_cases/sign_in_usecase.dart';
 
 part 'sign_in_event.dart';
 part 'sign_in_state.dart';

@@ -1,14 +1,16 @@
 import 'dart:io';
 
 import 'package:supabase/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/utils/cloudinary.dart';
 
 abstract class SupabaseDataSource {
   Future<bool> signIn(String phoneNumber);
   Future<bool> verifyOTP(String phoneNumber, String otp);
-  Future<bool> signUp(String fullName, String? bio, File? profile);
+  Future<bool> signUp(String fullName, String? bio, File? profile,String? profileUrl);
   Future<bool> isFirstTime();
+  Future<bool> providerSignIn(String provider);
 }
 
 class SupabaseDataSourceImpl implements SupabaseDataSource {
@@ -44,14 +46,14 @@ class SupabaseDataSourceImpl implements SupabaseDataSource {
   }
 
   @override
-  Future<bool> signUp(String fullName, String? bio, File? profile) async {
+  Future<bool> signUp(String fullName, String? bio, File? profile,String? profileUrl) async {
     final supabaseUser = supabaseClient.auth.currentSession!.user;
     final profilePictureUrl = profile != null
         ? await cloudinaryUpload(
             profile,
             "$fullName.${supabaseClient.auth.currentSession!.user.id}",
             "profile-picture")
-        : null;
+        : profileUrl;
 
     final insertResult = await supabaseClient.from('user_profile').insert({
       'user_id': supabaseUser.id,
@@ -64,21 +66,30 @@ class SupabaseDataSourceImpl implements SupabaseDataSource {
     }
     return true;
   }
-  
+
   @override
-  Future<bool> isFirstTime() async {  
+  Future<bool> isFirstTime() async {
+    final response = await supabaseClient
+        .from('user_profiles')
+        .select()
+        .eq('user_id', supabaseClient.auth.currentSession!.user.id);
 
-  final response = await supabaseClient
-      .from('user_profiles')
-      .select()
-      .eq('user_id', supabaseClient.auth.currentSession!.user.id);
+    final userProfiles = response.data;
 
-  final userProfiles = response.data;
-
-  if (userProfiles.isNotEmpty) {
-    return false;
-  } else {
-    return true;
+    if (userProfiles.isNotEmpty) {
+      return false;
+    } else {
+      return true;
+    }
   }
-}
+
+  @override
+  Future<bool> providerSignIn(String provider) async {
+    // Perform the sign-in operation using the specified provider
+    var response = await supabaseClient.auth.signInWithOAuth(
+        provider == "Google" ? Provider.google : Provider.facebook,
+        authScreenLaunchMode: LaunchMode.inAppWebView);
+    
+    return response;
+  }
 }

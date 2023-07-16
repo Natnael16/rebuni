@@ -5,6 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../features/authentication/presentation/screen/login_screen.dart';
 import '../../features/authentication/presentation/screen/sign_up_profile.dart';
+import '../../features/authentication/presentation/screen/splash_screen.dart';
 import '../../features/questions/presentation/screen/homepage.dart';
 import '../../main.dart';
 import '../utils/theme.dart';
@@ -15,9 +16,13 @@ class AppRouter extends StatelessWidget {
 
   AppRouter({Key? key}) : super(key: key) {
     _router = GoRouter(
-      // initialLocation: isLoggedIn ? path.home:  path.login ,
-      initialLocation: path.login,
+      initialLocation: path.splash,
       routes: <GoRoute>[
+        GoRoute(
+          path: path.splash,
+          builder: (BuildContext context, GoRouterState state) =>
+              const SplashPage(),
+        ),
         GoRoute(
           path: path.signUp,
           builder: (BuildContext context, GoRouterState state) =>

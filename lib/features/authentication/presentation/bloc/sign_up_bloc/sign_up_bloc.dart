@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../../core/error/failure.dart';
 import '../../../domain/use_cases/profile_usecase.dart';
-import '../../../domain/use_cases/sign_up_usecase.dart';
+import '../../../domain/use_cases/sign_in_usecase.dart';
 
 part 'sign_up_event.dart';
 part 'sign_up_state.dart';
