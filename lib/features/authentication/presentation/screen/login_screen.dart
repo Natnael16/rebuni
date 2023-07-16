@@ -139,13 +139,11 @@ class _LoginPageState extends State<LoginPage> {
               );
             }, listener: (context, ProviderSignInState state) {
               if (state is ProviderSignInSuccess) {
-                final AlertDialog alertDialog = AlertDialog(
-                  content: UniqueProgressIndicator(),
-                );
+              
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return alertDialog;
+                    return UniqueProgressIndicator();
                   },
                 );
                 supabase.auth.onAuthStateChange.listen((data) {

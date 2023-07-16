@@ -88,7 +88,7 @@ class SupabaseDataSourceImpl implements SupabaseDataSource {
     // Perform the sign-in operation using the specified provider
     var response = await supabaseClient.auth.signInWithOAuth(
         provider == "Google" ? Provider.google : Provider.facebook,
-        authScreenLaunchMode: LaunchMode.inAppWebView);
+        authScreenLaunchMode: LaunchMode.externalApplication);
     
     return response;
   }
