@@ -23,14 +23,12 @@ Future<String?> cloudinaryUpload(File file, fileName, folder) async {
       });
 
   if (response.isSuccessful) {
-    print('Get your image from with ${response.secureUrl}');
     return response.secureUrl;
   }
   throw Exception("not a valid image");
 }
 
 Future<String?> supabaseUpload(File file, fileName, bucket) async {
-  print('uploading');
   final filePath =
       'images/$fileName.${DateTime.now().millisecondsSinceEpoch}.jpg';
   final fileBytes = await file.readAsBytes();
@@ -39,13 +37,10 @@ Future<String?> supabaseUpload(File file, fileName, bucket) async {
       .from(bucket)
       .uploadBinary(filePath, fileBytes)
       .onError((error, stackTrace) {
-    print(error);
     throw Exception("upload failed: $error");
   });
 
   // Image uploaded successfully
-  print('Image uploaded successfully!');
   final publicURL = supabase.storage.from(bucket).getPublicUrl(filePath);
-  print("url : $publicURL");
   return publicURL;
 }

@@ -46,7 +46,6 @@ class UserRepositoryImpl implements UserRepository {
       String firstName, String? bio, File? profile,String? profileUrl) async {
     try {
       final status = await supabaseDataSource.signUp(firstName, bio, profile,profileUrl);
-      print(status);
       if (status == true) {
         return const Right(true);
       } else {

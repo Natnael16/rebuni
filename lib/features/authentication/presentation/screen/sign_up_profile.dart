@@ -11,7 +11,7 @@ import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/validators.dart';
 import '../bloc/sign_up_bloc/sign_up_bloc.dart';
 import '../widgets/custom_button.dart';
-import '../widgets/custom_textfield.dart';
+import '../../../../core/shared_widgets/custom_textfield.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SignUp extends StatefulWidget {
@@ -35,9 +35,7 @@ class _SignUpState extends State<SignUp> {
     setState(() {
       if (pickedFile != null) {
         image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
+      } else {}
     });
   }
 
@@ -120,6 +118,7 @@ class _SignUpState extends State<SignUp> {
               height: 6.h,
             ),
             CustomTextField(
+                width: 85.5.w,
                 hintText: "Full Name",
                 validator: validateFullName,
                 textEditingController: _fullNameEditingController,
@@ -129,6 +128,7 @@ class _SignUpState extends State<SignUp> {
               height: 2.h,
             ),
             CustomTextField(
+                width: 85.5.w,
                 hintText: 'Bio',
                 validator: (value) => null,
                 textEditingController: _bioEditingController,
@@ -138,7 +138,6 @@ class _SignUpState extends State<SignUp> {
               height: 4.h,
             ),
             BlocConsumer<SignUpBloc, SignUpState>(builder: (context, state) {
-              print(state);
               if (state is SignUpLoading) {
                 return UniqueProgressIndicator();
               }

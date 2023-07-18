@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl_phone_field/phone_number.dart';
 import 'package:rebuni/features/authentication/presentation/bloc/provider_sign_in/provider_sign_in_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -16,7 +17,7 @@ import '../../domain/use_cases/profile_usecase.dart';
 import '../bloc/sign_in_bloc/sign_in_bloc.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_providers_button.dart';
-import '../widgets/custom_textfield.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _phoneEditingController = TextEditingController();
+  String _phoneEditingController = "";
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +52,24 @@ class _LoginPageState extends State<LoginPage> {
               key: _formKey,
               child: Column(
                 children: [
-                  CustomTextField(
-                    hintText: "Phone Number",
-                    textEditingController: _phoneEditingController,
-                    validator: validatePhoneNumber,
-                    borderRadius: 5,
-                    icon: Icons.phone_android_rounded,
-                    isNumber: true,
+                  SizedBox(
+                    width: 85.w,
+                    child: IntlPhoneField(
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: "Phone Number",
+                        hintStyle: Theme.of(context).textTheme.labelSmall,
+                        border: InputBorder.none,
+                        fillColor: textFieldColor,
+                      ),
+                      initialCountryCode: 'ET',
+                      onChanged: (phone) {
+                        // Handle phone number changes
+                        setState(() {
+                          _phoneEditingController = phone.completeNumber;
+                        });
+                      },
+                    ),
                   ),
                   SizedBox(height: 8.h),
                   BlocConsumer<SignInBloc, SignInState>(
@@ -70,14 +82,8 @@ class _LoginPageState extends State<LoginPage> {
                         buttonText: "Sign in",
                         onPressed: () {
                           if (_formKey.currentState?.validate() == true) {
-                            if (_phoneEditingController.text == "" ||
-                                validatePhoneNumber(
-                                        _phoneEditingController.text) !=
-                                    null) {
-                              return;
-                            }
                             BlocProvider.of<SignInBloc>(context)
-                                .add(SignInClick(_phoneEditingController.text));
+                                .add(SignInClick(_phoneEditingController));
                           }
                         },
                       );
@@ -85,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                   }, listener: (context, SignInState state) {
                     if (state is SignInSuccess) {
                       context.push(path.otp, extra: {
-                        'phoneNumber': _phoneEditingController.text,
+                        'phoneNumber': _phoneEditingController,
                       });
                     }
                   }),
@@ -139,7 +145,6 @@ class _LoginPageState extends State<LoginPage> {
               );
             }, listener: (context, ProviderSignInState state) {
               if (state is ProviderSignInSuccess) {
-              
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -152,12 +157,12 @@ class _LoginPageState extends State<LoginPage> {
                   if (session != null) {
                     User user = session.user;
                     SignUpUseCase signUpUseCase = SignUpUseCase(getIt());
-                    signUpUseCase(
-                      SignUpParams(fullName: user.userMetadata!["full_name"],profileUrl: user.userMetadata!["picture"]));
+                    signUpUseCase(SignUpParams(
+                        fullName: user.userMetadata!["full_name"],
+                        profileUrl: user.userMetadata!["picture"]));
                     context.go(path.home);
                   }
                 }).onError((error, stackTrace) {
-                  print(error);
                   context.go(path.login);
                 });
               }

@@ -26,9 +26,9 @@ class OTPScreen extends StatefulWidget {
 
 class _OTPScreenState extends State<OTPScreen> {
   final _otpController = TextEditingController();
-  int duration = 10;
+  int duration = 120;
   int _endTime =
-      DateTime.now().millisecondsSinceEpoch + (10 * 1000); // Initial end time
+      DateTime.now().millisecondsSinceEpoch + (120 * 1000); // Initial end time
   bool get isTimerRunning => DateTime.now().millisecondsSinceEpoch < _endTime;
   bool showResend = false;
 
@@ -123,7 +123,6 @@ class _OTPScreenState extends State<OTPScreen> {
                     onEnd: () {
                       setState(() {
                         showResend = true;
-                        print(isTimerRunning);
                       });
                     },
                   ),

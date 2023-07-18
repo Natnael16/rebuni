@@ -25,7 +25,6 @@ class SupabaseDataSourceImpl implements SupabaseDataSource {
         .then((value) {
       return true;
     }).catchError((error) {
-      print("Error sending OTP: $error");
       return false;
     });
 
