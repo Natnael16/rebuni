@@ -9,6 +9,7 @@ var appTheme = ThemeData(
     useMaterial3: true,
     cardColor: containerBackgroundColor,
     scaffoldBackgroundColor: white,
+    
     textTheme: TextTheme(
       labelMedium: TextStyle(
         fontFamily: 'Poppins',
@@ -16,6 +17,24 @@ var appTheme = ThemeData(
         fontWeight: FontWeight.bold,
         fontSize: 16.sp,
       ),
+      bodyLarge: TextStyle(
+        fontFamily: 'Poppins',
+        color: black,
+        fontWeight: FontWeight.bold,
+        fontSize: 16.sp,
+      ),
+      bodyMedium: TextStyle(
+        fontFamily: 'Poppins',
+        color: black,
+        fontWeight: FontWeight.w500,
+        fontSize: 16.sp,
+      ),
+      bodySmall: TextStyle(
+        fontFamily: 'Poppins',
+        color: black,
+        fontSize: 15.sp,
+      ),
+
       labelLarge: TextStyle(
         fontFamily: 'Poppins',
         color: blackTextColor,

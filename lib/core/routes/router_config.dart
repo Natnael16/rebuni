@@ -5,7 +5,9 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../features/authentication/presentation/screen/login_screen.dart';
 import '../../features/authentication/presentation/screen/sign_up_profile.dart';
-import '../utils/colors.dart';
+import '../../features/authentication/presentation/screen/splash_screen.dart';
+import '../../features/questions/presentation/screen/homepage.dart';
+import '../../main.dart';
 import '../utils/theme.dart';
 import 'paths.dart' as path;
 
@@ -14,8 +16,13 @@ class AppRouter extends StatelessWidget {
 
   AppRouter({Key? key}) : super(key: key) {
     _router = GoRouter(
-      initialLocation: path.login,
+      initialLocation: path.home,
       routes: <GoRoute>[
+        GoRoute(
+          path: path.splash,
+          builder: (BuildContext context, GoRouterState state) =>
+              const SplashPage(),
+        ),
         GoRoute(
           path: path.signUp,
           builder: (BuildContext context, GoRouterState state) =>
@@ -29,11 +36,11 @@ class AppRouter extends StatelessWidget {
             path: path.otp,
             builder: (BuildContext context, GoRouterState state) {
               var extra = state.extra as Map<String, dynamic>;
-              return OTPScreen(
-                  otpMatch: extra['otpMatch'],
-                  isFirstTimeUser: extra['isFirstTimeUser'],
-                  phoneNumber: extra['phoneNumber']);
+              return OTPScreen(phoneNumber: extra['phoneNumber']);
             }),
+        GoRoute(
+            path: path.home,
+            builder: (BuildContext context, GoRouterState state) => HomePage()),
       ],
     );
   }

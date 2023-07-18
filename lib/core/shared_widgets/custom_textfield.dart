@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import '../../../../core/utils/colors.dart';
+import '../utils/colors.dart';
 
 class CustomTextField extends StatefulWidget {
   CustomTextField({
+    this.multiline = false,
+    this.height,
+    required this.width,
     this.isNumber = false,
     required this.borderRadius,
-    required this.icon,
+    this.icon,
     required this.validator,
     Key? key,
-    required this.textEditingController, required this.hintText,
+    required this.textEditingController,
+    required this.hintText,
   }) : super(key: key);
-
+  final bool multiline;
+  final double width;
+  final double? height;
   final double borderRadius;
-  final IconData icon;
+  final IconData? icon;
   final bool isNumber;
   final String hintText;
   final String? Function(String?) validator; // Updated validator parameter
@@ -39,13 +45,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       children: [
         Container(
-          width: 85.w,
+          width: widget.width,
+          height: widget.height,
           padding: EdgeInsets.symmetric(horizontal: (4).w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(widget.borderRadius),
             color: textFieldColor,
           ),
           child: TextField(
+            maxLines: widget.multiline ? null : 1,
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w300),
             keyboardType:
                 widget.isNumber ? TextInputType.phone : TextInputType.text,
             cursorColor: primaryColor,
@@ -57,7 +66,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               });
             },
             decoration: InputDecoration(
-              icon: Icon(widget.icon, color: textFieldGrayColor, size: (2.5).h),
+              icon: widget.icon != null ? Icon(widget.icon, color: textFieldGrayColor, size: (2.5).h) : null,
               hintText: widget.hintText,
               hintStyle: Theme.of(context).textTheme.labelSmall,
               border: InputBorder.none,
@@ -65,15 +74,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
         ),
         SizedBox(
-          height: 2.h,
+          height: 1.h,
         ),
         _errorText != null
             ? Align(
-                alignment: Alignment.centerLeft,
+                alignment: Alignment.center,
                 child: Padding(
                   padding: EdgeInsets.only(left: 8.w),
                   child: Text(_errorText!,
-                      style: const TextStyle(color: Colors.red)),
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: 13.sp,color: Colors.red),
+
+                      ),
                 ))
             : SizedBox()
       ],
