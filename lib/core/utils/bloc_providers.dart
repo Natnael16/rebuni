@@ -6,6 +6,7 @@ import '../../features/authentication/presentation/bloc/provider_sign_in/provide
 import '../../features/authentication/presentation/bloc/sign_in_bloc/sign_in_bloc.dart';
 import '../../features/authentication/presentation/bloc/sign_up_bloc/sign_up_bloc.dart';
 import '../../features/questions/presentation/bloc/image_picker_bloc/image_picker_bloc.dart';
+import '../../features/questions/presentation/bloc/questions_bloc/questions_bloc.dart';
 import '../injections/injection_container.dart';
 
 List<BlocProvider> getAllBlocProviders() {
@@ -16,5 +17,9 @@ List<BlocProvider> getAllBlocProviders() {
     BlocProvider<ProviderSignInBloc>(create: (_) => getIt<ProviderSignInBloc>()),
     BlocProvider<CategorySelectorBloc>(create: (_) => CategorySelectorBloc()),
     BlocProvider<ImagePickerBloc>(create: (_) => ImagePickerBloc()),
+
+    //! Questions
+
+    BlocProvider<QuestionsBloc>(create: (_) => getIt<QuestionsBloc>(),)
   ];
 }

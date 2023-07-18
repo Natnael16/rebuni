@@ -40,8 +40,8 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
         'image_url': imageUrl,
         'categories': categories,
         'is_anonymous': isAnonymous,
+        'user_id' : supabaseClient.auth.currentUser!.id,
       };
-
       // Perform the insert operation in the questions table
       final response = await supabaseClient.from('questions').insert(data);
 

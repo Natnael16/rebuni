@@ -1,16 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:bottom_sheet/bottom_sheet.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rebuni/features/questions/presentation/bloc/categroy_selector_bloc/category_selector_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
-import '../../../../core/shared_widgets/shimmer.dart';
+import '../../../../core/shared_widgets/custom_loading_widget.dart';
 import '../../../../core/utils/colors.dart';
 import '../../../../core/shared_widgets/custom_textfield.dart';
 import '../../../../core/utils/validators.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-
 import '../bloc/image_picker_bloc/image_picker_bloc.dart';
+import '../bloc/questions_bloc/questions_bloc.dart';
 import '../widget/categories_drop_down.dart';
 import '../widget/custom_round_button.dart';
 import '../widget/image_picker_text_field.dart';
@@ -31,7 +32,7 @@ class _AskQuestionState extends State<AskQuestion> {
   final _titleController = TextEditingController();
 
   final _imageController = TextEditingController();
-  bool? isAnonymous = false;
+  bool isAnonymous = false;
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +128,9 @@ class _AskQuestionState extends State<AskQuestion> {
                                 value: isAnonymous,
                                 onChanged: (newValue) {
                                   setState(() {
-                                    isAnonymous = newValue;
+                                    if (newValue != null) {
+                                      isAnonymous = newValue;
+                                    }
                                   });
                                 },
                                 shape: RoundedRectangleBorder(
@@ -143,8 +146,7 @@ class _AskQuestionState extends State<AskQuestion> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    isAnonymous = isAnonymous != null &&
-                                            isAnonymous == true
+                                    isAnonymous = isAnonymous == true
                                         ? false
                                         : true;
                                   });
@@ -163,10 +165,69 @@ class _AskQuestionState extends State<AskQuestion> {
                             height: 3.h,
                           ),
                           Center(
-                            child: CustomRoundButton(
-                                buttonText: 'Ask Now',
-                                onPressed: onAskNowPressed,
-                                borderRadius: 20),
+                            child: BlocConsumer<QuestionsBloc, QuestionsState>(
+                              listener: (context, state) {
+                                if (state is PostQuestionSuccess) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Row(
+                                        children: [
+                                          Text(
+                                            "Posted Successfully",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium!
+                                                .copyWith(color: white),
+                                          ),
+                                          Spacer(),
+                                          const Icon(Icons.check_circle_outline, color: white)
+                                        ],
+                                      ),
+                                      elevation: 5,
+                                      backgroundColor: primaryColor,
+                                      behavior: SnackBarBehavior.floating,
+                                      dismissDirection:
+                                          DismissDirection.horizontal,
+                                    ),
+                                  );
+
+                                  context.pop();
+                                } else if (state is PostQuestionFailure) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Row(
+                                        children: [
+                                          Text(
+                                            "Post Failed Please Try Again",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium!
+                                                .copyWith(color: white),
+                                          ),
+                                          Spacer(),
+                                          const Icon(Icons.cancel_outlined,
+                                              color: white)
+                                        ],
+                                      ),
+                                      elevation: 5,
+                                      backgroundColor: Colors.red,
+                                      behavior: SnackBarBehavior.floating,
+                                      dismissDirection:
+                                          DismissDirection.horizontal,
+                                    ),
+                                  );
+                                }
+                              },
+                              builder: (context, state) {
+                                if (state is PostQuestionLoading) {
+                                  return UniqueProgressIndicator();
+                                }
+                                return CustomRoundButton(
+                                    buttonText: 'Ask Now',
+                                    onPressed: onAskNowPressed,
+                                    borderRadius: 20);
+                              },
+                            ),
                           )
                         ]),
                   ),
@@ -178,20 +239,25 @@ class _AskQuestionState extends State<AskQuestion> {
   }
 
   onAskNowPressed() {
-    if (_formKey.currentState!.validate()) {
-      CategorySelectorState categoryState;
-      ImagePickerState imagePickerState;
+    CategorySelectorState categoryState =
+        BlocProvider.of<CategorySelectorBloc>(context).state;
+    
+    ImagePickerState imagePickerState =
+        BlocProvider.of<ImagePickerBloc>(context).state;
+    File? image;
+    List<String> categories;
 
-      categoryState = BlocProvider.of<CategorySelectorBloc>(context).state;
-      imagePickerState = BlocProvider.of<ImagePickerBloc>(context).state;
-
+    if (!_formKey.currentState!.validate()) {
       if (categoryState is CategorySelectorInitial &&
           categoryState.categories.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              "Please fill all the fields with * sign",
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: white),
+              "Please fill all neccessary fields",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .copyWith(color: white),
             ),
             elevation: 5,
             backgroundColor: Colors.red,
@@ -204,8 +270,20 @@ class _AskQuestionState extends State<AskQuestion> {
       _formKey.currentState!.save();
       return;
     }
+    image =
+        (imagePickerState is ImageAddedState) ? imagePickerState.image : null;
 
-    
+    if (categoryState is CategorySelectorInitial) {
+      categories = categoryState.categories;
+    } else {
+      return;
+    }
 
+    BlocProvider.of<QuestionsBloc>(context).add(PostQuestion(
+        categories: categories,
+        image: image,
+        description: _descriptionController.text,
+        isAnonymous: isAnonymous,
+        title: _titleController.text));
   }
 }

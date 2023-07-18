@@ -11,7 +11,6 @@ Future<String?> cloudinaryUpload(File file, fileName, folder) async {
     apiSecret: secret,
     cloudName: "rebuni",
   );
-
   final response = await cloudinary.upload(
       file: file.path,
       fileBytes: file.readAsBytesSync(),
