@@ -11,5 +11,8 @@ class ImagePickerBloc extends Bloc<ImagePickerEvent, ImagePickerState> {
     on<AddImageEvent>((event, emit) {
       emit(ImageAddedState(event.image));
     });
+    on<RemoveImageEvent>((event, emit) {
+      emit(ImagePickerInitial());
+    });
   }
 }

@@ -40,7 +40,7 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
         'image_url': imageUrl,
         'categories': categories,
         'is_anonymous': isAnonymous,
-        'user_id' : supabaseClient.auth.currentUser!.id,
+        'user_id': supabaseClient.auth.currentUser!.id,
       };
       // Perform the insert operation in the questions table
       final response = await supabaseClient.from('questions').insert(data);
@@ -48,6 +48,7 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
       // Check if the insert operation was successful and return the appropriate result
       return response == null;
     } catch (e) {
+      print(e);
       return false;
     }
   }

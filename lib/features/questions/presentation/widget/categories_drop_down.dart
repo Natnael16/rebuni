@@ -50,7 +50,8 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
                 children: [
                   ...selectedCategories.map((category) {
                     return Chip(
-                      label: Text(category),
+                      side: const BorderSide(color: primaryColor),
+                      label: Text(category,style: Theme.of(context).textTheme.bodySmall),
                       onDeleted: () {
                         setState(() {
                           selectedCategories.remove(category);

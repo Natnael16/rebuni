@@ -25,14 +25,33 @@ class AskQuestion extends StatefulWidget {
 
 class _AskQuestionState extends State<AskQuestion> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _categoryController = TextEditingController();
 
   final _descriptionController = TextEditingController();
 
   final _titleController = TextEditingController();
+  final _categoryController = TextEditingController();
+  final imagePickerController = TextEditingController();
+  
+  CategorySelectorBloc? _categorySelectorBloc;
+  ImagePickerBloc? _imagePickerBloc;
 
-  final _imageController = TextEditingController();
   bool isAnonymous = false;
+  @override
+  void initState() {
+    _categorySelectorBloc = BlocProvider.of<CategorySelectorBloc>(context);
+    _imagePickerBloc = BlocProvider.of<ImagePickerBloc>(context);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    _titleController.dispose();
+    _categorySelectorBloc?.add(AddCategoriesEvent([]));
+    _imagePickerBloc?.add(RemoveImageEvent());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +62,7 @@ class _AskQuestionState extends State<AskQuestion> {
         minHeight: 0.89999,
         decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(35), topRight: Radius.circular(35)),
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
             color: white),
         bodyBuilder: (context, index) {
           TextTheme textTheme = Theme.of(context).textTheme;
@@ -54,14 +73,33 @@ class _AskQuestionState extends State<AskQuestion> {
                 padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
                 child: SingleChildScrollView(
                   child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     key: _formKey,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Title *',
-                            style: textTheme.bodyMedium!.copyWith(
-                                color: black, fontWeight: FontWeight.w500),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Ask Question ',
+                              style: textTheme.bodyLarge,
+                            ),
+                          ),
+                          SizedBox(height: 2.h),
+                          Row(
+                            children: [
+                              Text(
+                                'Title ',
+                                style: textTheme.bodyMedium!.copyWith(
+                                    color: black, fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                '*',
+                                style: textTheme.bodyMedium!.copyWith(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
                           ),
                           SizedBox(
                             height: 1.h,
@@ -75,17 +113,27 @@ class _AskQuestionState extends State<AskQuestion> {
                           SizedBox(
                             height: 1.h,
                           ),
-                          Text(
-                            'Description *',
-                            style: textTheme.bodyMedium!.copyWith(
-                                color: black, fontWeight: FontWeight.w500),
+                          Row(
+                            children: [
+                              Text(
+                                'Description ',
+                                style: textTheme.bodyMedium!.copyWith(
+                                    color: black, fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                '*',
+                                style: textTheme.bodyMedium!.copyWith(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
                           ),
                           SizedBox(
                             height: 1.h,
                           ),
                           CustomTextField(
                               multiline: true,
-                              height: 30.h,
+                              height: 23.h,
                               width: MediaQuery.of(context).size.width,
                               hintText: "Write a discription for your question",
                               borderRadius: 4,
@@ -94,16 +142,27 @@ class _AskQuestionState extends State<AskQuestion> {
                           SizedBox(
                             height: 1.h,
                           ),
-                          Text(
-                            'Categories *',
-                            style: textTheme.bodyMedium!.copyWith(
-                                color: black, fontWeight: FontWeight.w500),
+                          Row(
+                            children: [
+                              Text(
+                                'Categories ',
+                                style: textTheme.bodyMedium!.copyWith(
+                                    color: black, fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                '*',
+                                style: textTheme.bodyMedium!.copyWith(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
                           ),
                           SizedBox(
                             height: 1.h,
                           ),
                           CategoriesDropDown(
-                              categoryController: _categoryController),
+                            categoryController: _categoryController 
+                          ),
                           SizedBox(
                             height: 1.h,
                           ),
@@ -116,7 +175,7 @@ class _AskQuestionState extends State<AskQuestion> {
                             height: 1.h,
                           ),
                           ImagePickerTextField(
-                              controller: _imageController,
+                              controller: imagePickerController,
                               hintText: "Select Image",
                               icon: Icons.add_photo_alternate_outlined),
                           SizedBox(
@@ -136,7 +195,7 @@ class _AskQuestionState extends State<AskQuestion> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(4),
                                 ),
-                                side: BorderSide(
+                                side: const BorderSide(
                                   color: Colors.grey,
                                   width: 1.5,
                                 ),
@@ -146,18 +205,14 @@ class _AskQuestionState extends State<AskQuestion> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    isAnonymous = isAnonymous == true
-                                        ? false
-                                        : true;
+                                    isAnonymous =
+                                        isAnonymous == true ? false : true;
                                   });
                                 },
-                                child: Text(
-                                  'Anonymously ask',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                child: Text('Anonymously ask',
+                                    style: textTheme.bodyMedium!.copyWith(
+                                        color: black,
+                                        fontWeight: FontWeight.w500)),
                               ),
                             ],
                           ),
@@ -180,7 +235,8 @@ class _AskQuestionState extends State<AskQuestion> {
                                                 .copyWith(color: white),
                                           ),
                                           Spacer(),
-                                          const Icon(Icons.check_circle_outline, color: white)
+                                          const Icon(Icons.check_circle_outline,
+                                              color: white)
                                         ],
                                       ),
                                       elevation: 5,
@@ -239,43 +295,35 @@ class _AskQuestionState extends State<AskQuestion> {
   }
 
   onAskNowPressed() {
-    CategorySelectorState categoryState =
-        BlocProvider.of<CategorySelectorBloc>(context).state;
-    
-    ImagePickerState imagePickerState =
-        BlocProvider.of<ImagePickerBloc>(context).state;
-    File? image;
-    List<String> categories;
+    CategorySelectorState categoryState = _categorySelectorBloc!.state;
 
-    if (!_formKey.currentState!.validate()) {
-      if (categoryState is CategorySelectorInitial &&
-          categoryState.categories.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              "Please fill all neccessary fields",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(color: white),
-            ),
-            elevation: 5,
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            dismissDirection: DismissDirection.horizontal,
-          ),
-        );
-        return;
-      }
-      _formKey.currentState!.save();
-      return;
-    }
+    ImagePickerState imagePickerState = _imagePickerBloc!.state;
+
+    File? image;
     image =
         (imagePickerState is ImageAddedState) ? imagePickerState.image : null;
-
+    List<String> categories;
     if (categoryState is CategorySelectorInitial) {
       categories = categoryState.categories;
     } else {
+      return;
+    }
+    if (!_formKey.currentState!.validate() ||
+        categoryState.categories.isEmpty) {
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Please fill all neccessary fields",
+            style:
+                Theme.of(context).textTheme.bodyMedium!.copyWith(color: white),
+          ),
+          elevation: 5,
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          dismissDirection: DismissDirection.horizontal,
+        ),
+      );
       return;
     }
 

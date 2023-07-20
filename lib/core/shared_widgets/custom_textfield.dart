@@ -52,7 +52,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderRadius: BorderRadius.circular(widget.borderRadius),
             color: textFieldColor,
           ),
-          child: TextField(
+          child: TextFormField(
+            validator:widget.validator, 
             maxLines: widget.multiline ? null : 1,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w300),
             keyboardType:
@@ -61,32 +62,22 @@ class _CustomTextFieldState extends State<CustomTextField> {
             focusNode: _textFieldFocusNode,
             controller: widget.textEditingController,
             onChanged: (value) {
-              setState(() {
-                _errorText = widget.validator(value);
-              });
+              // setState(() {
+              //   _errorText = widget.validator(value);
+              // });
             },
             decoration: InputDecoration(
               icon: widget.icon != null ? Icon(widget.icon, color: textFieldGrayColor, size: (2.5).h) : null,
               hintText: widget.hintText,
               hintStyle: Theme.of(context).textTheme.labelSmall,
               border: InputBorder.none,
+              
             ),
           ),
         ),
         SizedBox(
           height: 1.h,
         ),
-        _errorText != null
-            ? Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 8.w),
-                  child: Text(_errorText!,
-                      style: Theme.of(context).textTheme.labelSmall!.copyWith(fontSize: 13.sp,color: Colors.red),
-
-                      ),
-                ))
-            : SizedBox()
       ],
     );
   }

@@ -11,20 +11,24 @@ Future<String?> cloudinaryUpload(File file, fileName, folder) async {
     apiSecret: secret,
     cloudName: "rebuni",
   );
-  final response = await cloudinary.upload(
-      file: file.path,
-      fileBytes: file.readAsBytesSync(),
-      resourceType: CloudinaryResourceType.image,
-      folder: folder,
-      fileName: fileName,
-      progressCallback: (count, total) {
-        print('Uploading image from file with progress: $count/$total');
-      });
-
+  final response = await cloudinary
+      .upload(
+          file: file.path,
+          fileBytes: file.readAsBytesSync(),
+          resourceType: CloudinaryResourceType.image,
+          folder: folder,
+          fileName: "$fileName.${DateTime.now().millisecondsSinceEpoch}.jpg",
+          progressCallback: (count, total) {
+            print('Uploading image from file with progress: $count/$total');
+          })
+      .onError((error, stackTrace) {
+    print(error);
+    throw Exception();
+  });
   if (response.isSuccessful) {
     return response.secureUrl;
   }
-  throw Exception("not a valid image");
+  throw Exception("Failed to upload image");
 }
 
 Future<String?> supabaseUpload(File file, fileName, bucket) async {

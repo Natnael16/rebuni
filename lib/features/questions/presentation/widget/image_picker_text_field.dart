@@ -23,8 +23,9 @@ class ImagePickerTextField extends StatelessWidget {
     if (image != null) {
       final file = File(image.path);
       // You can process the file here
+
       BlocProvider.of<ImagePickerBloc>(context).add(AddImageEvent(file));
-      
+
       final imageName = file.path.split('/').last;
       controller.text = imageName;
     } else {
