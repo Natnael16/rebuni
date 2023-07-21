@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import '../../../../core/utils/colors.dart';
+import '../utils/colors.dart';
 
 class CustomRoundButton extends StatelessWidget {
   const CustomRoundButton(

@@ -10,10 +10,11 @@ import '../../../../core/shared_widgets/custom_loading_widget.dart';
 import '../../../../core/utils/colors.dart';
 import '../../../../core/shared_widgets/custom_textfield.dart';
 import '../../../../core/utils/validators.dart';
+import '../bloc/get_questions_bloc/get_questions_bloc.dart';
 import '../bloc/image_picker_bloc/image_picker_bloc.dart';
-import '../bloc/questions_bloc/questions_bloc.dart';
+import '../bloc/post_question_bloc/questions_bloc.dart';
 import '../widget/categories_drop_down.dart';
-import '../widget/custom_round_button.dart';
+import '../../../../core/shared_widgets/custom_round_button.dart';
 import '../widget/image_picker_text_field.dart';
 
 class AskQuestion extends StatefulWidget {
@@ -50,6 +51,8 @@ class _AskQuestionState extends State<AskQuestion> {
     _titleController.dispose();
     _categorySelectorBloc?.add(AddCategoriesEvent([]));
     _imagePickerBloc?.add(RemoveImageEvent());
+    context.read<GetQuestionsBloc>().add(GetQuestions());
+
     super.dispose();
   }
 

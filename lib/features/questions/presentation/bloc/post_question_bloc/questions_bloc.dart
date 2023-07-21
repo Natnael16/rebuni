@@ -15,6 +15,7 @@ class QuestionsBloc extends Bloc<QuestionsEvent, QuestionsState> {
   
   QuestionsBloc(this.postQuestion) : super(QuestionsInitial()) {
     on<PostQuestion>(_onPostQuestion);
+
   }
   _onPostQuestion(PostQuestion event, Emitter<QuestionsState> emit) async  {
     emit(PostQuestionLoading());

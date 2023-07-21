@@ -25,4 +25,19 @@ class Discussion {
     required this.answer,
     required this.postId,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'discussionId': discussionId,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'body': body,
+      'vote': vote.toJson(),
+      'userId': userId,
+      'replyId': replyId,
+      'numberOfReplies': numberOfReplies,
+      'answer': answer.toJson(),
+      'postId': postId,
+    };
+  }
 }
