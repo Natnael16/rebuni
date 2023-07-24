@@ -15,7 +15,7 @@ Widget profileSection(TextTheme textTheme,Question question) {
       CircleAvatar(
         minRadius: 2.5.h,
         maxRadius: 2.5.h,
-        child:question.userProfile.profilePicture != '' ? CustomizedCachedImage(imageURL: question.userProfile.profilePicture ,borderRadius: 50,) : DefaultProfileImage(name: question.userProfile.fullName)
+        child:question.userProfile.profilePicture != '' && !question.isAnonymous ? CustomizedCachedImage(imageURL: question.userProfile.profilePicture ,borderRadius: 50,fit: BoxFit.cover) : DefaultProfileImage(name: question.userProfile.fullName)
       ),
       SizedBox(width: 2.w),
       Column(
@@ -24,7 +24,7 @@ Widget profileSection(TextTheme textTheme,Question question) {
           Row(
             children: [
               Text(
-                question.userProfile.fullName,
+                question.isAnonymous ? "Anonymous" : question.userProfile.fullName,
                 style: textTheme.bodyMedium,
               ),
               SizedBox(width: 1.w),

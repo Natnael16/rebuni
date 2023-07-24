@@ -10,4 +10,13 @@ class Vote {
     required this.upvote,
     required this.downvote,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'voteId': voteId,
+      'createdAt': createdAt.toIso8601String(),
+      'upvote': upvote,
+      'downvote': downvote,
+    };
+  }
 }

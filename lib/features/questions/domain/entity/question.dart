@@ -1,5 +1,3 @@
-import 'answer.dart';
-import 'discussion.dart';
 import 'user_profile.dart';
 import 'vote.dart';
 
@@ -13,10 +11,11 @@ class Question {
   final bool isClosed;
   final Vote vote;
   final int numberOfViews;
-  final List<Answer> answers;
+  final int numberOfAnswers;
   final UserProfile userProfile;
-  final List<Discussion> discussions;
+  final int numberOfDiscussions;
   final bool isAnonymous;
+  final List<String> categories;
 
   Question({
     required this.questionId,
@@ -28,9 +27,10 @@ class Question {
     required this.isClosed,
     required this.vote,
     required this.numberOfViews,
-    required this.answers,
+    required this.numberOfAnswers,
     required this.userProfile,
-    required this.discussions,
+    required this.numberOfDiscussions,
     required this.isAnonymous,
+    required this.categories
   });
 }

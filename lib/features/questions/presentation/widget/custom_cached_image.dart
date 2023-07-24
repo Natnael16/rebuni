@@ -9,11 +9,13 @@ class CustomizedCachedImage extends StatelessWidget {
       {required this.imageURL,
       this.width,
       this.height,
+      this.fit = BoxFit.contain,
       this.borderRadius = 12,
       super.key});
   final double? width;
   final double? height;
   final String imageURL;
+  final BoxFit fit;
   final double borderRadius;
   @override
   Widget build(BuildContext context) {
@@ -31,8 +33,9 @@ class CustomizedCachedImage extends StatelessWidget {
             height: height,
             width: width,
             decoration: BoxDecoration(
-              color: white,
-                image: DecorationImage(image: imageProvider, fit: BoxFit.contain),
+                color: white,
+                image:
+                    DecorationImage(image: imageProvider, fit: fit),
                 borderRadius:
                     BorderRadius.all(Radius.circular(borderRadius)))));
   }

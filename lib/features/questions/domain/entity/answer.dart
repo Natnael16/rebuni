@@ -22,4 +22,18 @@ class Answer {
     required this.questionId,
     required this.isAnsweredForUser,
   });
+
+   Map<String, dynamic> toJson() {
+    return {
+      'answerId': answerId,
+      'createdAt': createdAt.toIso8601String(),
+      'userId': userId,
+      'updatedAt': updatedAt.toIso8601String(),
+      'description': description,
+      'vote': vote.toJson(),
+      'imageUrl': imageUrl,
+      'questionId': questionId,
+      'isAnsweredForUser': isAnsweredForUser,
+    };
+  }
 }

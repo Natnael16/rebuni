@@ -11,3 +11,5 @@ class AddImageEvent extends ImagePickerEvent {
   File image;
   AddImageEvent(this.image);
 }
+
+class RemoveImageEvent extends ImagePickerEvent {}

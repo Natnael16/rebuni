@@ -1,28 +1,19 @@
-import 'package:equatable/equatable.dart';
+import '../../domain/entity/user_profile.dart';
 
-class UserProfile extends Equatable {
-  final int userProfileId;
-  final DateTime createdAt;
-  final String userId;
-  final String bio;
-  final String profilePicture;
-  final String fullName;
-  final List<String> followers;
-  final List<String> followings;
-
-  const UserProfile({
-    required this.userProfileId,
-    required this.createdAt,
-    required this.userId,
-    required this.bio,
-    required this.profilePicture,
-    required this.fullName,
-    required this.followers,
-    required this.followings,
+class UserProfileModel extends UserProfile {
+  UserProfileModel({
+    required super.userProfileId,
+    required super.createdAt,
+    required super.userId,
+    required super.bio,
+    required super.profilePicture,
+    required super.followers,
+    required super.followings,
+    required super.fullName,
   });
 
-  factory UserProfile.fromJson(Map<String, dynamic> userProfileData) {
-    var userprofile = UserProfile(
+  factory UserProfileModel.fromJson(Map<String, dynamic> userProfileData) {
+    return UserProfileModel(
       userId: userProfileData['user_id'],
       userProfileId: userProfileData['user_profile_id'] as int,
       fullName: userProfileData['full_name'] as String,
@@ -36,7 +27,6 @@ class UserProfile extends Equatable {
           .map((id) => id as String)
           .toList(),
     );
-    return userprofile;
   }
 
   Map<String, dynamic> toJson() {
@@ -51,7 +41,4 @@ class UserProfile extends Equatable {
       'followings': followings,
     };
   }
-  
-  @override
-  List<Object?> get props => [userProfileId, createdAt, userId, bio, profilePicture, fullName,followers,followings];
 }

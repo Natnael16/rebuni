@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import '../utils/colors.dart';
+import '../../../../core/utils/colors.dart';
 
 class CustomTextField extends StatefulWidget {
   CustomTextField({
-    this.multiline = false,
-    this.height,
-    required this.width,
     this.isNumber = false,
     required this.borderRadius,
-    this.icon,
+    required this.icon,
     required this.validator,
     Key? key,
-    required this.textEditingController,
-    required this.hintText,
+    required this.textEditingController, required this.hintText,
   }) : super(key: key);
-  final bool multiline;
-  final double width;
-  final double? height;
+
   final double borderRadius;
-  final IconData? icon;
+  final IconData icon;
   final bool isNumber;
   final String hintText;
   final String? Function(String?) validator; // Updated validator parameter
@@ -45,39 +39,43 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       children: [
         Container(
-          width: widget.width,
-          height: widget.height,
+          width: 85.w,
           padding: EdgeInsets.symmetric(horizontal: (4).w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(widget.borderRadius),
             color: textFieldColor,
           ),
-          child: TextFormField(
-            validator:widget.validator, 
-            maxLines: widget.multiline ? null : 1,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.w300),
+          child: TextField(
             keyboardType:
                 widget.isNumber ? TextInputType.phone : TextInputType.text,
             cursorColor: primaryColor,
             focusNode: _textFieldFocusNode,
             controller: widget.textEditingController,
             onChanged: (value) {
-              // setState(() {
-              //   _errorText = widget.validator(value);
-              // });
+              setState(() {
+                _errorText = widget.validator(value);
+              });
             },
             decoration: InputDecoration(
-              icon: widget.icon != null ? Icon(widget.icon, color: textFieldGrayColor, size: (2.5).h) : null,
+              icon: Icon(widget.icon, color: textFieldGrayColor, size: (2.5).h),
               hintText: widget.hintText,
               hintStyle: Theme.of(context).textTheme.labelSmall,
               border: InputBorder.none,
-              
             ),
           ),
         ),
         SizedBox(
-          height: 1.h,
+          height: 2.h,
         ),
+        _errorText != null
+            ? Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 8.w),
+                  child: Text(_errorText!,
+                      style: const TextStyle(color: Colors.red)),
+                ))
+            : SizedBox()
       ],
     );
   }

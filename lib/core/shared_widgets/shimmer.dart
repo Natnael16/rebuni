@@ -7,7 +7,7 @@ class ShimmerWidget extends StatelessWidget {
   final double? height;
   final double? width;
 
-  const ShimmerWidget({super.key,  this.height,  this.width});
+  const ShimmerWidget({super.key, this.height, this.width});
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
@@ -21,4 +21,3 @@ class ShimmerWidget extends StatelessWidget {
     );
   }
 }
-
