@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rebuni/features/authentication/presentation/screen/otp_screen.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
-
 import '../../features/authentication/presentation/screen/login_screen.dart';
 import '../../features/authentication/presentation/screen/sign_up_profile.dart';
 import '../../features/authentication/presentation/screen/splash_screen.dart';
+import '../../features/questions/presentation/screen/ask_question.dart';
 import '../../features/questions/presentation/screen/homepage.dart';
-import '../../main.dart';
 import '../utils/theme.dart';
 import 'paths.dart' as path;
 
@@ -41,6 +39,9 @@ class AppRouter extends StatelessWidget {
         GoRoute(
             path: path.home,
             builder: (BuildContext context, GoRouterState state) => HomePage()),
+        GoRoute(path: path.ask,
+        builder: (BuildContext context, GoRouterState state) => AskQuestion())
+        
       ],
     );
   }

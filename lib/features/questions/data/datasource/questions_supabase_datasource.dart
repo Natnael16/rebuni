@@ -1,14 +1,10 @@
 import 'dart:io';
 
-import 'package:dartz/dartz.dart';
 import 'package:supabase/supabase.dart';
 
 import '../../../../core/utils/cloudinary.dart';
 import '../../domain/entity/user_profile.dart';
-import '../models/answer_model.dart';
-import '../models/discusion_model.dart';
 import '../models/question_model.dart';
-import '../models/user_profile_model.dart';
 import '../models/vote_model.dart';
 
 abstract class SupabaseQuestionsDataSource {
@@ -64,7 +60,6 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
 
   @override
   Future<List<QuestionModel>> getQuestions(int curIndex) async {
-    print("fetched $curIndex, ");
     final response = await supabaseClient
         .from('questions')
         .select()

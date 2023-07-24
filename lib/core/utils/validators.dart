@@ -32,8 +32,8 @@ String? validateTitle(String? value) {
 }
 
 String? validateDescription(String? value) {
-  if (value == null || value.isEmpty || value.length < 20) {
-    return 'Description must be at least 20 characters';
+  if (value == null || value.isEmpty || value.length < 10) {
+    return 'Description must be at least 10 characters';
   }
 
   return null; // Return null if the input is valid

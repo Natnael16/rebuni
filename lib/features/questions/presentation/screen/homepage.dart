@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rebuni/core/shared_widgets/shimmer.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
+import '../../../../core/routes/paths.dart' as path;
 import '../../../../core/shared_widgets/custom_loading_widget.dart';
 import '../../../../core/shared_widgets/no_data_reload.dart';
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/images.dart';
-import '../../domain/entity/answer.dart';
 import '../../domain/entity/question.dart';
-import '../../domain/entity/user_profile.dart';
-import '../../domain/entity/vote.dart';
 import '../bloc/get_questions_bloc/get_questions_bloc.dart';
+import '../widget/bottom_navbar_item.dart';
 import '../widget/question_card.dart';
-import 'ask_question.dart';
+import './ask_question.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -33,6 +31,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Question> questions = [];
   var tabIndex = 0;
+  int _currentIndex = 0;
   final PageController _pageController = PageController(initialPage: 0);
   final _scrollController = ScrollController();
 
@@ -153,43 +152,54 @@ class _HomePageState extends State<HomePage> {
                                     child: ShimmerWidget(height: 25.h),
                                   ));
                         } else if (state is QuestionsLoaded) {
-                          return ListView.builder(
-                              physics : const BouncingScrollPhysics(),
-                              controller: _scrollController,
-                              shrinkWrap: true,
-                              itemCount: state.questions.length,
-                              itemBuilder: (context, index) => Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: QuestionCard(
-                                            state.questions[index]),
-                                      ),
-                                      index >= state.questions.length - 1
-                                          ? Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 1.h),
-                                              child: Center(
-                                                  child: state.hasReachedMax
-                                                      ? Text(
-                                                          "End of the list",
-                                                          style: textTheme
-                                                              .bodyMedium!
-                                                              .copyWith(
-                                                                  color:
-                                                                      primaryColor),
-                                                        )
-                                                      : UniqueProgressIndicator()),
-                                            )
-                                          : const SizedBox()
-                                    ],
-                                  ));
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              BlocProvider.of<GetQuestionsBloc>(context)
+                                  .add(RefreshQuestions());
+                            },
+                            child: ListView.builder(
+                                physics: const BouncingScrollPhysics(),
+                                controller: _scrollController,
+                                shrinkWrap: true,
+                                itemCount: state.questions.length,
+                                itemBuilder: (context, index) => Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: QuestionCard(
+                                              state.questions[index]),
+                                        ),
+                                        index >= state.questions.length - 1
+                                            ? Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 1.h),
+                                                child: Center(
+                                                    child: state.hasReachedMax
+                                                        ? Text(
+                                                            "End of the list",
+                                                            style: textTheme
+                                                                .bodyMedium!
+                                                                .copyWith(
+                                                                    color:
+                                                                        primaryColor),
+                                                          )
+                                                        : UniqueProgressIndicator()),
+                                              )
+                                            : const SizedBox()
+                                      ],
+                                    )),
+                          );
                         } else {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               NoDataReload(
-                                onPressed: () {},
+                                onPressed: () {
+                                  BlocProvider.of<GetQuestionsBloc>(context)
+                                      .add(RefreshQuestions());
+                                  BlocProvider.of<GetQuestionsBloc>(context)
+                                      .add(GetQuestions());
+                                },
                               ),
                             ],
                           );
@@ -215,6 +225,24 @@ class _HomePageState extends State<HomePage> {
               ]),
         )
       ]),
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 10,
+        type: BottomNavigationBarType.fixed,
+        selectedFontSize: 11,
+        unselectedFontSize: 11,
+        currentIndex: _currentIndex,
+        onTap: (i) => setState(() => _currentIndex = i),
+        items: [
+          buildBottomNavigationBarItem(
+              Icons.home, 'Home', homeIcon, primaryColor),
+          buildBottomNavigationBarItem(
+              Icons.search, 'Search', searchIcon, primaryColor),
+          buildBottomNavigationBarItem(
+              Icons.bookmark, 'Bookmark', bookmarkIcon, primaryColor),
+          buildBottomNavigationBarItem(
+              Icons.person, 'Profile', profileIcon, primaryColor),
+        ],
+      ),
     );
   }
 

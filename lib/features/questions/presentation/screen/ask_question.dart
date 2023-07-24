@@ -35,12 +35,14 @@ class _AskQuestionState extends State<AskQuestion> {
   
   CategorySelectorBloc? _categorySelectorBloc;
   ImagePickerBloc? _imagePickerBloc;
+  GetQuestionsBloc? _getQuestionsBloc;
 
   bool isAnonymous = false;
   @override
   void initState() {
     _categorySelectorBloc = BlocProvider.of<CategorySelectorBloc>(context);
     _imagePickerBloc = BlocProvider.of<ImagePickerBloc>(context);
+    _getQuestionsBloc = BlocProvider.of<GetQuestionsBloc>(context);
 
     super.initState();
   }
@@ -51,10 +53,18 @@ class _AskQuestionState extends State<AskQuestion> {
     _titleController.dispose();
     _categorySelectorBloc?.add(AddCategoriesEvent([]));
     _imagePickerBloc?.add(RemoveImageEvent());
-    context.read<GetQuestionsBloc>().add(GetQuestions());
+    
 
     super.dispose();
   }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+
+  //   _categorySelectorBloc ??= BlocProvider.of<CategorySelectorBloc>(context);
+  //   _imagePickerBloc ??= BlocProvider.of<ImagePickerBloc>(context);
+  //   _getQuestionsBloc ??= BlocProvider.of<GetQuestionsBloc>(context);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -226,6 +236,7 @@ class _AskQuestionState extends State<AskQuestion> {
                             child: BlocConsumer<QuestionsBloc, QuestionsState>(
                               listener: (context, state) {
                                 if (state is PostQuestionSuccess) {
+                                  _getQuestionsBloc?.add(RefreshQuestions());
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Row(

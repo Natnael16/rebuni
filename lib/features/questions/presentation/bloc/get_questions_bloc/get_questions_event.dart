@@ -7,4 +7,6 @@ abstract class GetQuestionsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetQuestions extends GetQuestionsEvent{}
+class GetQuestions extends GetQuestionsEvent {}
+
+class RefreshQuestions extends GetQuestionsEvent {}

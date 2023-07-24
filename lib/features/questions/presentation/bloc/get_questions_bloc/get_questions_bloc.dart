@@ -24,6 +24,13 @@ class GetQuestionsBloc extends Bloc<GetQuestionsEvent, GetQuestionsState> {
       _onGetQuestions,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<RefreshQuestions>((event, emit) async {
+      emit(GetQuestionsLoading());
+      var response = await getQuestions(0);
+      response.fold(
+          (Failure failure) => emit(GetQuestionsFailure(failure.errorMessage)),
+          (List<Question> success) => emit(QuestionsLoaded(success)));
+    });
   }
 
   _onGetQuestions(GetQuestions event, Emitter<GetQuestionsState> emit) async {

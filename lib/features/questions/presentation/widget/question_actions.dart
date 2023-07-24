@@ -22,7 +22,7 @@ Widget actionsSection(TextTheme textTheme, Question question, hasAnswer) {
             children: [
               iconTextAction(
                 textTheme,
-                const Icon(Icons.thumb_up, color: primaryColor),
+                const Icon(Icons.thumb_up_outlined, color: primaryColor),
                 '${question.vote.upvote}',
                 () {},
                 const Key('thumbUpIcon'),
