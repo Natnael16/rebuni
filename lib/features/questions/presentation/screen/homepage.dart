@@ -11,6 +11,7 @@ import '../../../../core/utils/images.dart';
 import '../../domain/entity/question.dart';
 import '../bloc/get_questions_bloc/get_questions_bloc.dart';
 import '../widget/bottom_navbar_item.dart';
+import '../widget/question_actions.dart';
 import '../widget/question_card.dart';
 import './ask_question.dart';
 
@@ -167,7 +168,19 @@ class _HomePageState extends State<HomePage> {
                                         Padding(
                                           padding: const EdgeInsets.all(4.0),
                                           child: QuestionCard(
-                                              state.questions[index]),
+                                              state.questions[index],
+                                              showActions: actionsSection(textTheme, upvoteCount:state.questions[index].vote.upvote,downvoteCount: state
+                                                      .questions[index]
+                                                      .vote
+                                                      .downvote ,numberOfAnswers: state
+                                                      .questions[index]
+                                                      .numberOfAnswers,
+                                                      numberOfDiscussions: state
+                                                    .questions[index]
+                                                    .numberOfDiscussions,
+                                                      ),
+                
+                                              onPressed:() => context.push(path.questionDetail,extra: {"question": state.questions[index]})),
                                         ),
                                         index >= state.questions.length - 1
                                             ? Padding(
@@ -211,15 +224,17 @@ class _HomePageState extends State<HomePage> {
                 Flex(
                   direction: Axis.vertical,
                   children: [
-                    Expanded(
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: questions.length,
-                          itemBuilder: (context, index) => Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: QuestionCard(questions[index]),
-                              )),
-                    ),
+                    // Expanded(
+                    //   child: ListView.builder(
+                    //       shrinkWrap: true,
+                    //       itemCount: questions.length,
+                    //       itemBuilder: (context, index) => Padding(
+                    //             padding: const EdgeInsets.all(4.0),
+                    //             child: QuestionCard(questions[index],
+                    //                 showActions: actionsSection(
+                    //                     textTheme, questions[index], true)),
+                    //           )),
+                    // ),
                   ],
                 ),
               ]),

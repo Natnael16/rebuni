@@ -3,19 +3,28 @@ import 'package:rebuni/features/questions/presentation/widget/custom_cached_imag
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/utils/colors.dart';
-import '../../domain/entity/question.dart';
-
-
 import 'default_profile_image.dart';
 
-
-Widget profileSection(TextTheme textTheme,Question question) {
+Widget profileSection(
+  TextTheme textTheme, {
+  required String fullName,
+  String profilePicture = '',
+  bool isAnonymous = false,
+  required DateTime createdAt,
+  void Function()? onPressed,
+}) {
   return Row(
     children: [
       CircleAvatar(
         minRadius: 2.5.h,
         maxRadius: 2.5.h,
-        child:question.userProfile.profilePicture != '' && !question.isAnonymous ? CustomizedCachedImage(imageURL: question.userProfile.profilePicture ,borderRadius: 50,fit: BoxFit.cover) : DefaultProfileImage(name: question.userProfile.fullName)
+        child: profilePicture != '' && !isAnonymous
+            ? CustomizedCachedImage(
+                imageURL: profilePicture,
+                borderRadius: 50,
+                fit: BoxFit.cover,
+              )
+            : DefaultProfileImage(name: fullName),
       ),
       SizedBox(width: 2.w),
       Column(
@@ -24,21 +33,21 @@ Widget profileSection(TextTheme textTheme,Question question) {
           Row(
             children: [
               Text(
-                question.isAnonymous ? "Anonymous" : question.userProfile.fullName,
+                isAnonymous ? "Anonymous" : fullName,
                 style: textTheme.bodyMedium,
               ),
               SizedBox(width: 1.w),
-              Icon(Icons.verified_outlined, color: answeredYellow, size: 2.h)
+              Icon(Icons.verified_outlined, color: answeredYellow, size: 2.h),
             ],
           ),
           Text(
-            buildTimestampText(question.createdAt),
+            buildTimestampText(createdAt),
             style: textTheme.labelSmall!.copyWith(fontSize: 13.sp),
           ),
         ],
       ),
       const Spacer(),
-      const Icon(Icons.more_horiz)
+      InkWell( onTap: onPressed,child:  const Icon(Icons.more_horiz)),
     ],
   );
 }
@@ -58,6 +67,6 @@ String buildTimestampText(DateTime dateTime) {
   }
 
   // Format as a specific time if older than a day
-  final formatter = DateFormat('hh:mm a');
+  final formatter = DateFormat('MMM d, yyyy, hh:mm a');
   return formatter.format(dateTime);
 }

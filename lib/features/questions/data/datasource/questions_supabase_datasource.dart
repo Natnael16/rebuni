@@ -4,6 +4,8 @@ import 'package:supabase/supabase.dart';
 
 import '../../../../core/utils/cloudinary.dart';
 import '../../domain/entity/user_profile.dart';
+import '../models/answer_model.dart';
+import '../models/discusion_model.dart';
 import '../models/question_model.dart';
 import '../models/vote_model.dart';
 
@@ -16,6 +18,10 @@ abstract class SupabaseQuestionsDataSource {
     required bool isAnonymous,
   });
   Future<List<QuestionModel>> getQuestions(int curIndex);
+
+  Future<List<AnswerModel>> getAnswers(String questionId);
+
+  Future<List<DiscussionModel>> getDiscussions(String questionId);
 }
 
 class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
@@ -156,5 +162,62 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
 
     UserProfile userProfile = UserProfile.fromJson(userProfileData);
     return userProfile;
+  }
+
+  @override
+  Future<List<AnswerModel>> getAnswers(String questionId) async {
+    final response = await supabaseClient
+        .from('answers')
+        .select()
+        .eq('question_id', questionId);
+
+    final answerList = response as List<dynamic>;
+    if (answerList.isEmpty) {
+      throw Exception("Answers not found");
+    }
+
+    List<Future<AnswerModel>> answers = answerList.map((answer) async {
+      answer['vote'] = answer['vote_id'] != null
+          ? await getVoteData(answer['vote_id'])
+          : {
+              'voteId': '0',
+              'createdAt': DateTime.now().toIso8601String(),
+              'upvote': 0,
+              'downvote': 0,
+            };
+      answer['user_profile'] = await getUserProfile(answer['user_id']);
+      return AnswerModel.fromJson(answer);
+    }).toList();
+
+    return await Future.wait(answers);
+  }
+
+  @override
+  Future<List<DiscussionModel>> getDiscussions(String questionId) async {
+    final response = await supabaseClient
+        .from('discussions')
+        .select()
+        .eq('question_id', questionId);
+
+    final discussionList = response as List<dynamic>;
+    if (discussionList.isEmpty) {
+      throw Exception("Discussions not found");
+    }
+
+    List<Future<DiscussionModel>> discussions =
+        discussionList.map((discussion) async {
+      discussion['vote'] = discussion['vote_id'] != null
+          ? await getVoteData(discussion['vote_id'])
+          : {
+              'voteId': '0',
+              'createdAt': DateTime.now().toIso8601String(),
+              'upvote': 0,
+              'downvote': 0,
+            };
+      discussion['user_profile'] = await getUserProfile(discussion['user_id']);
+      return DiscussionModel.fromJson(discussion);
+    }).toList();
+
+    return await Future.wait(discussions);
   }
 }
