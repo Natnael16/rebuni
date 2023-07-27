@@ -1,6 +1,5 @@
-
 import '../../domain/entity/discussion.dart';
-import 'answer_model.dart';
+import '../../domain/entity/user_profile.dart';
 import 'vote_model.dart';
 
 class DiscussionModel extends Discussion {
@@ -8,38 +7,38 @@ class DiscussionModel extends Discussion {
     required String discussionId,
     required DateTime createdAt,
     required DateTime updatedAt,
-    required String body,
+    required String description,
     required VoteModel vote,
-    required String userId,
+    required UserProfile userProfile,
     required String replyId,
     required int numberOfReplies,
-    required AnswerModel answer,
     required String postId,
+    required String questionId,
   }) : super(
           discussionId: discussionId,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          body: body,
+          description: description,
           vote: vote,
-          userId: userId,
+          userProfile: userProfile,
           replyId: replyId,
           numberOfReplies: numberOfReplies,
-          answer: answer,
           postId: postId,
+          questionId: questionId,
         );
 
   factory DiscussionModel.fromJson(Map<String, dynamic> json) {
     return DiscussionModel(
-      discussionId: json['discussionId'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      body: json['body'],
+      questionId: json['question_id'] ?? '',
+      discussionId: json['discussion_id'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+      description: json['body'],
       vote: VoteModel.fromJson(json['vote']),
-      userId: json['userId'],
-      replyId: json['replyId'],
-      numberOfReplies: json['numberOfReplies'],
-      answer: AnswerModel.fromJson(json['answer']),
-      postId: json['postId'],
+      userProfile: json['user_profile'],
+      replyId: json['reply_id'] ?? "",
+      numberOfReplies: json['number_of_replies'] as int,
+      postId: json['post_id'] ?? "",
     );
   }
 
@@ -48,12 +47,11 @@ class DiscussionModel extends Discussion {
       'discussionId': discussionId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
-      'body': body,
+      'body': description,
       'vote': vote.toJson(),
-      'userId': userId,
+      'userId': userProfile,
       'replyId': replyId,
       'numberOfReplies': numberOfReplies,
-      'answer': answer.toJson(),
       'postId': postId,
     };
   }

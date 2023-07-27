@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rebuni/features/authentication/presentation/screen/otp_screen.dart';
+import 'package:rebuni/features/questions/presentation/screen/question_detail_page.dart';
 import '../../features/authentication/presentation/screen/login_screen.dart';
 import '../../features/authentication/presentation/screen/sign_up_profile.dart';
 import '../../features/authentication/presentation/screen/splash_screen.dart';
+import '../../features/questions/domain/entity/question.dart';
 import '../../features/questions/presentation/screen/ask_question.dart';
 import '../../features/questions/presentation/screen/homepage.dart';
 import '../utils/theme.dart';
@@ -40,7 +42,11 @@ class AppRouter extends StatelessWidget {
             path: path.home,
             builder: (BuildContext context, GoRouterState state) => HomePage()),
         GoRoute(path: path.ask,
-        builder: (BuildContext context, GoRouterState state) => AskQuestion())
+        builder: (BuildContext context, GoRouterState state) => AskQuestion()),
+        GoRoute(path: path.questionDetail,
+        builder: (BuildContext context, GoRouterState state) {
+          var extra = state.extra as Map<String, dynamic>;
+          return QuestionDetail(question: extra['question']);})
         
       ],
     );

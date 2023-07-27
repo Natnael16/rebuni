@@ -5,6 +5,8 @@ import '../../features/authentication/presentation/bloc/otp_bloc/otp_bloc_bloc.d
 import '../../features/authentication/presentation/bloc/provider_sign_in/provider_sign_in_bloc.dart';
 import '../../features/authentication/presentation/bloc/sign_in_bloc/sign_in_bloc.dart';
 import '../../features/authentication/presentation/bloc/sign_up_bloc/sign_up_bloc.dart';
+import '../../features/questions/presentation/bloc/get_answers_bloc/get_answers_bloc.dart';
+import '../../features/questions/presentation/bloc/get_discussions_bloc/get_discussions_bloc.dart';
 import '../../features/questions/presentation/bloc/get_questions_bloc/get_questions_bloc.dart';
 import '../../features/questions/presentation/bloc/image_picker_bloc/image_picker_bloc.dart';
 import '../../features/questions/presentation/bloc/post_question_bloc/questions_bloc.dart';
@@ -22,7 +24,11 @@ List<BlocProvider> getAllBlocProviders() {
     //! Questions
 
     BlocProvider<QuestionsBloc>(create: (_) => getIt<QuestionsBloc>()),
-    BlocProvider<GetQuestionsBloc>(create: (_) => getIt<GetQuestionsBloc>())
+    BlocProvider<GetQuestionsBloc>(create: (_) => getIt<GetQuestionsBloc>()),
+    BlocProvider<GetAnswersBloc>(create: (_) => getIt<GetAnswersBloc>()),
+    BlocProvider<GetDiscussionsBloc>(create: (_) => getIt<GetDiscussionsBloc>())
+
+    
     
   ];
 }

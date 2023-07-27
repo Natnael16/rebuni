@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/images.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../domain/entity/question.dart';
-
-Widget actionsSection(TextTheme textTheme, Question question, hasAnswer) {
+Widget actionsSection(
+  TextTheme textTheme, {
+  required int upvoteCount,
+  required int downvoteCount,
+   int? numberOfAnswers,
+   int? numberOfDiscussions,
+   int? numberOfReplies,
+}) {
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: Row(
@@ -23,7 +28,7 @@ Widget actionsSection(TextTheme textTheme, Question question, hasAnswer) {
               iconTextAction(
                 textTheme,
                 const Icon(Icons.thumb_up_outlined, color: primaryColor),
-                '${question.vote.upvote}',
+                upvoteCount.toString(),
                 () {},
                 const Key('thumbUpIcon'),
               ),
@@ -31,36 +36,52 @@ Widget actionsSection(TextTheme textTheme, Question question, hasAnswer) {
               iconTextAction(
                 textTheme,
                 const Icon(Icons.thumb_down_outlined, color: primaryColor),
-                '${question.vote.downvote}',
+                downvoteCount.toString(),
                 () {},
                 const Key('thumbDownIcon'),
               ),
             ],
           ),
         ),
-        hasAnswer
-            ? iconTextAction(
-                textTheme,
-                SvgPicture.asset(answerIconImage,
-                    height: 2.5.h, width: 23, color: primaryColor),
-                '${question.numberOfAnswers}',
-                () {},
-                const Key('answerIcon'),
-              )
-            : const SizedBox(),
-        iconTextAction(
+        numberOfAnswers != null ? iconTextAction(
+          textTheme,
+          SvgPicture.asset(
+            answerIconImage,
+            height: 2.5.h,
+            width: 23,
+            color: primaryColor,
+          ),
+          numberOfAnswers.toString(),
+          () {},
+          const Key('answerIcon'),
+        ) : const SizedBox(),
+
+        numberOfDiscussions != null ?iconTextAction(
           textTheme,
           const Icon(
             Icons.question_answer_outlined,
             color: primaryColor,
           ),
-          '${question.numberOfDiscussions}',
+          numberOfDiscussions.toString(),
           () {},
           const Key('questionAnswerIcon'),
-        ),
+        ) : const SizedBox(),
+        numberOfReplies != null
+            ? iconTextAction(
+                textTheme,
+                const Icon(
+                  Icons.reply_rounded,
+                  color: primaryColor,
+                ),
+                numberOfReplies.toString(),
+                () {},
+                const Key('questionAnswerIcon'),
+              )
+            : const SizedBox(),
+
         iconTextAction(
           textTheme,
-          Icon(
+          const Icon(
             Icons.bookmark_border,
             color: primaryColor,
           ),
@@ -73,8 +94,13 @@ Widget actionsSection(TextTheme textTheme, Question question, hasAnswer) {
   );
 }
 
-Widget iconTextAction(TextTheme textTheme, Widget icon, String text,
-    void Function()? onPressed, Key key) {
+Widget iconTextAction(
+  TextTheme textTheme,
+  Widget icon,
+  String text,
+  void Function()? onPressed,
+  Key key,
+) {
   return Container(
     margin: EdgeInsets.only(left: 1.w, right: 1.w),
     decoration: BoxDecoration(
@@ -93,8 +119,10 @@ Widget iconTextAction(TextTheme textTheme, Widget icon, String text,
               (text != '')
                   ? Text(
                       formatNumber(int.parse(text)),
-                      style: textTheme.labelSmall!
-                          .copyWith(color: black, fontSize: 14.sp),
+                      style: textTheme.labelSmall!.copyWith(
+                        color: black,
+                        fontSize: 14.sp,
+                      ),
                     )
                   : const SizedBox(),
             ],
