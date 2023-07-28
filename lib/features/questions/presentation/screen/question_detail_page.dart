@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rebuni/features/questions/presentation/widget/question_card.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../../../core/routes/paths.dart' as path;
 import '../../../../core/shared_widgets/no_data_reload.dart';
 import '../../../../core/shared_widgets/shimmer.dart';
 import '../../../../core/utils/colors.dart';
@@ -140,8 +142,16 @@ class _QuestionDetailState extends State<QuestionDetail> {
               itemBuilder: (context, index) => Column(
                     children: [
                       Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: AnswerCard(answer: state.answerList[index])),
+                        padding: const EdgeInsets.all(4.0),
+                        child: AnswerCard(
+                            onPressed: () {
+                              context.push(path.answerDetail, extra: {
+                                'answer': state.answerList[index],
+                                'question': widget.question
+                              });
+                            },
+                            answer: state.answerList[index]),
+                      ),
                     ],
                   ));
         } else {
@@ -189,6 +199,11 @@ class _QuestionDetailState extends State<QuestionDetail> {
                       Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: DiscussionCard(
+                              onPressed: () {
+                                context.push(path.discussionDetail, extra: {
+                                  'discussion': state.discussionList[index]
+                                });
+                              },
                               discussion: state.discussionList[index])),
                     ],
                   ));

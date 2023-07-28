@@ -6,6 +6,7 @@ import '../../../../core/error/failure.dart';
 import '../entity/answer.dart';
 import '../entity/discussion.dart';
 import '../entity/question.dart';
+import '../entity/reply.dart';
 
 abstract class QuestionsRepository {
   Future<Either<Failure, bool>> postQuestion({
@@ -21,6 +22,9 @@ abstract class QuestionsRepository {
   Future<Either<Failure, List<Answer>>> getAnswers(String questionId);
 
   Future<Either<Failure, List<Discussion>>> getDiscussions(String questionId);
+
+  Future<Either<Failure, List<Reply>>> getReplies(String id, bool isAnswer);
+
 
 
 

@@ -6,14 +6,19 @@ import 'question_card.dart';
 
 class DiscussionCard extends StatelessWidget {
   Discussion discussion;
-  DiscussionCard({super.key, required this.discussion});
+  int descriptionLength;
+  void Function()? onPressed;
+  DiscussionCard(
+      {super.key, required this.discussion, this.descriptionLength = 3,this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
     return QuestionCard(discussion,
-    showImage: false,
+        onPressed: onPressed,
+        descriptionLength: descriptionLength,
+        showImage: false,
         isAnswer: true,
         showActions: actionsSection(textTheme,
             upvoteCount: discussion.vote.upvote,

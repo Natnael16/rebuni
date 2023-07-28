@@ -7,6 +7,7 @@ import '../../domain/entity/user_profile.dart';
 import '../models/answer_model.dart';
 import '../models/discusion_model.dart';
 import '../models/question_model.dart';
+import '../models/reply_model.dart';
 import '../models/vote_model.dart';
 
 abstract class SupabaseQuestionsDataSource {
@@ -22,6 +23,8 @@ abstract class SupabaseQuestionsDataSource {
   Future<List<AnswerModel>> getAnswers(String questionId);
 
   Future<List<DiscussionModel>> getDiscussions(String questionId);
+
+  Future<List<ReplyModel>> getReplies(String id, bool isAnswer);
 }
 
 class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
@@ -219,5 +222,32 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
     }).toList();
 
     return await Future.wait(discussions);
+  }
+
+  @override
+  Future<List<ReplyModel>> getReplies(String id, bool isAnswer) async {
+    final response = await supabaseClient.from('replys').select().eq(
+        isAnswer ? 'answer_id' : 'discussion_id',
+        isAnswer ? int.parse(id) : id);
+
+    final replyList = response as List<dynamic>;
+    if (replyList.isEmpty) {
+      throw Exception("Replies not found");
+    }
+
+    List<Future<ReplyModel>> replies = replyList.map((reply) async {
+      reply['vote'] = reply['vote_id'] != null
+          ? await getVoteData(reply['vote_id'])
+          : {
+              'voteId': '0',
+              'createdAt': DateTime.now().toIso8601String(),
+              'upvote': 0,
+              'downvote': 0,
+            };
+      reply['user_profile'] = await getUserProfile(reply['user_id']);
+      return ReplyModel.fromJson(reply);
+    }).toList();
+
+    return await Future.wait(replies);
   }
 }

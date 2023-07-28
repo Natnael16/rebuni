@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/injections/injection_container.dart';
 import 'core/routes/router_config.dart';
+import 'core/utils/bloc_observer.dart';
 import 'core/utils/bloc_providers.dart';
 
 void main() async {
+  await dotenv.load();
   await Supabase.initialize(
     authFlowType: AuthFlowType.pkce,
-    url: 'https://tsqjnitbmizfrmcfjrmb.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRzcWpuaXRibWl6ZnJtY2Zqcm1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODUzNjQ1MDMsImV4cCI6MjAwMDk0MDUwM30.mzdsQhWN8cCSXy0mXBOATV6tTnevL-xgAAg3vLrUmlU',
+    url: dotenv.env['SUPABASE_URL'] ?? '',
+    anonKey: dotenv.env['ANON_KEY'] ?? '',
   );
   await injectionInit();
-  
+  Bloc.observer = MyGlobalObserver();
   runApp(ResponsiveSizer(
     builder: (context, orientation, screenType) {
       return MultiBlocProvider(
@@ -29,7 +31,6 @@ void main() async {
 final supabase = Supabase.instance.client;
 final isLoggedIn =
     supabase.auth.currentSession != null; // Retrieve the current session data
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
