@@ -5,3 +5,5 @@ const home = '/home';
 const splash = '/splash';
 const ask = '/ask';
 const questionDetail = '/questionDetail';
+const answerDetail = '/answerDetail';
+const discussionDetail = '/discussionDetail';

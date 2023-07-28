@@ -5,8 +5,9 @@ import 'package:rebuni/features/questions/presentation/screen/question_detail_pa
 import '../../features/authentication/presentation/screen/login_screen.dart';
 import '../../features/authentication/presentation/screen/sign_up_profile.dart';
 import '../../features/authentication/presentation/screen/splash_screen.dart';
-import '../../features/questions/domain/entity/question.dart';
+import '../../features/questions/presentation/screen/answer_detail.dart';
 import '../../features/questions/presentation/screen/ask_question.dart';
+import '../../features/questions/presentation/screen/discussion_detail.dart';
 import '../../features/questions/presentation/screen/homepage.dart';
 import '../utils/theme.dart';
 import 'paths.dart' as path;
@@ -46,7 +47,19 @@ class AppRouter extends StatelessWidget {
         GoRoute(path: path.questionDetail,
         builder: (BuildContext context, GoRouterState state) {
           var extra = state.extra as Map<String, dynamic>;
-          return QuestionDetail(question: extra['question']);})
+          return QuestionDetail(question: extra['question']);}),
+          GoRoute(
+            path: path.answerDetail,
+            builder: (BuildContext context, GoRouterState state) {
+              var extra = state.extra as Map<String, dynamic>;
+              return AnswerDetail(answer: extra['answer'], question: extra['question']);
+            }),
+                    GoRoute(
+            path: path.discussionDetail,
+            builder: (BuildContext context, GoRouterState state) {
+              var extra = state.extra as Map<String, dynamic>;
+              return DiscussionDetail(discussion: extra['discussion']);
+            }),
         
       ],
     );

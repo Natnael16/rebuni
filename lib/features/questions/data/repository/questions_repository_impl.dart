@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:rebuni/features/questions/domain/entity/answer.dart';
 import 'package:rebuni/features/questions/domain/entity/discussion.dart';
 import 'package:rebuni/features/questions/domain/entity/question.dart';
+import 'package:rebuni/features/questions/domain/entity/reply.dart';
 
 import '../../../../core/error/failure.dart';
 import '../../domain/repository/questions_repository.dart';
@@ -65,6 +66,17 @@ class QuestionsRepositoryImpl implements QuestionsRepository {
   Future<Either<Failure, List<Discussion>>> getDiscussions(String questionId) async {
     try {
       final List<Discussion> result = await questionsDataSource.getDiscussions(questionId);
+      return Right(result);
+    } catch (e) {
+      print('get error $e');
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Reply>>> getReplies(String id, bool isAnswer) async {
+    try {
+      final List<Reply> result = await questionsDataSource.getReplies(id, isAnswer);
       return Right(result);
     } catch (e) {
       print('get error $e');

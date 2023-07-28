@@ -1,8 +1,5 @@
 import '../../domain/entity/question.dart';
 import '../../domain/entity/user_profile.dart';
-import 'answer_model.dart';
-import 'discusion_model.dart';
-import 'user_profile_model.dart';
 import 'vote_model.dart';
 
 class QuestionModel extends Question {
