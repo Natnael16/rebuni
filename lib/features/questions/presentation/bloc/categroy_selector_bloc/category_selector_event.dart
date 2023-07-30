@@ -11,4 +11,7 @@ class AddCategoriesEvent extends CategorySelectorEvent {
   List<String> categories;
 
   AddCategoriesEvent(this.categories);
+
+  @override
+  List<Object> get props => [categories];
 }

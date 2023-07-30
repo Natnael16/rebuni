@@ -5,7 +5,9 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import '../../../../core/shared_widgets/no_data_reload.dart';
 import '../../../../core/shared_widgets/shimmer.dart';
 import '../../domain/entity/discussion.dart';
+import '../bloc/add_discussion_bloc/add_discussion_bloc.dart';
 import '../bloc/get_replies_bloc/get_replies_bloc.dart';
+import '../widget/bottom_text_field.dart';
 import '../widget/discussion_card.dart';
 import '../widget/reply_card.dart';
 
@@ -18,6 +20,8 @@ class DiscussionDetail extends StatefulWidget {
 }
 
 class _DiscussionDetailState extends State<DiscussionDetail> {
+  final replyTextEditingController = TextEditingController();
+
   @override
   initState() {
     BlocProvider.of<GetRepliesBloc>(context)
@@ -27,39 +31,63 @@ class _DiscussionDetailState extends State<DiscussionDetail> {
   }
 
   @override
+  dispose() {
+    replyTextEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-          child: Column(
-        children: [
-         
-          SizedBox(
-            height: 1.h,
-          ),
-  
-          DiscussionCard(discussion: widget.discussion,
-            descriptionLength: widget.discussion.description.length
-          ),
-          SizedBox(
-            height: 2.h,
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 2.w),
-              child: Text("Replies",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(fontSize: 19.sp)),
-            ),
-          ),
-          repliesSection(context)
-          //
-        ],
-      )),
-    );
+        appBar: AppBar(),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            BlocProvider.of<GetRepliesBloc>(context)
+        .add(GetReplies(widget.discussion.discussionId.toString(), false));
+          },
+          child: SingleChildScrollView(
+              child: Column(
+            children: [
+              SizedBox(
+                height: 1.h,
+              ),
+        
+              DiscussionCard(
+                  discussion: widget.discussion,
+                  descriptionLength: widget.discussion.description.length),
+              SizedBox(
+                height: 2.h,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 2.w),
+                  child: Text("Replies",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge!
+                          .copyWith(fontSize: 19.sp)),
+                ),
+              ),
+              repliesSection(context),
+              SizedBox(height: 7.h),
+              BlocListener<AddDiscussionBloc, AddDiscussionState>(
+                  listener: (context, state) {
+                    if (state is AddDiscussionSuccess) {
+                      BlocProvider.of<GetRepliesBloc>(context).add(GetReplies(
+                            widget.discussion.discussionId.toString(), false));
+                      setState(() {
+                        replyTextEditingController.text = '';
+                      });
+                    }
+                  },
+                  child: const SizedBox())
+              //
+            ],
+          )),
+        ),
+        bottomSheet: bottomTextField("Add Reply", context,
+            replyTextEditingController, onReplySubmitted));
   }
 
   Widget repliesSection(BuildContext context) {
@@ -101,8 +129,8 @@ class _DiscussionDetailState extends State<DiscussionDetail> {
                   child: NoDataReload(
                     height: 20.h,
                     onPressed: () {
-                      BlocProvider.of<GetRepliesBloc>(context).add(
-                          GetReplies(widget.discussion.discussionId, false));
+                      BlocProvider.of<GetRepliesBloc>(context).add(GetReplies(
+                          widget.discussion.discussionId.toString(), false));
                     },
                   ),
                 ),
@@ -112,5 +140,15 @@ class _DiscussionDetailState extends State<DiscussionDetail> {
         },
       ),
     );
+  }
+
+  onReplySubmitted() {
+    if (replyTextEditingController.text == '') {
+      return;
+    }
+    BlocProvider.of<AddDiscussionBloc>(context).add(AddDiscussion(
+        id: widget.discussion.discussionId,
+        body: replyTextEditingController.text,
+        isQuestion: false));
   }
 }

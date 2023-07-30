@@ -7,3 +7,4 @@ const ask = '/ask';
 const questionDetail = '/questionDetail';
 const answerDetail = '/answerDetail';
 const discussionDetail = '/discussionDetail';
+const addAnswer = '/addAnswer';

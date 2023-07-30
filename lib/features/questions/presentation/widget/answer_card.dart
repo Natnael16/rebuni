@@ -9,11 +9,13 @@ class AnswerCard extends StatelessWidget {
   void Function()? onPressed;
   int descriptionLength;
   bool showImage;
+  final bool isFormattedDescription;
   AnswerCard(
       {super.key,
       required this.answer,
       this.onPressed,
       this.descriptionLength = 3,
+      this.isFormattedDescription = true,
       this.showImage = true});
 
   @override
@@ -21,8 +23,10 @@ class AnswerCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return QuestionCard(answer,
+        
         showImage: showImage,
         isAnswer: true,
+        isFormattedBody: isFormattedDescription,
         onPressed: onPressed,
         descriptionLength: descriptionLength,
         showActions: actionsSection(textTheme,

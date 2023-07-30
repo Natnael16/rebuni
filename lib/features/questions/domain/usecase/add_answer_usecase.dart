@@ -6,41 +6,38 @@ import '../../../../core/error/failure.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../repository/questions_repository.dart';
 
-class PostQuestionUseCase implements UseCase<bool, PostAnswerParams> {
-  final QuestionsRepository questionsRepository;
+class PostAnswerUseCase implements UseCase<bool, PostAnswerParams> {
+  final QuestionsRepository AnswersRepository;
 
-  PostQuestionUseCase(this.questionsRepository);
+  PostAnswerUseCase(this.AnswersRepository);
 
   @override
   Future<Either<Failure, bool>> call(PostAnswerParams params) async {
-    final String title = params.title;
     final String description = params.description;
     final File? image = params.image;
-    final List<String> categories = params.categories;
-    final bool isAnonymous = params.isAnonymous;
+    final String id =  params.questionId;
+
     // Sign in the user
     final Either<Failure, bool> signUpResult =
-        await questionsRepository.postQuestion(
-            title: title,
+        await AnswersRepository.postAnswer(
+          questionId : id,
             description: description,
             image: image,
-            categories: categories,
-            isAnonymous: isAnonymous);
+            );
+
     return signUpResult;
   }
 }
 
 class PostAnswerParams {
-  final String title;
+ String questionId;
   final String description;
   final File? image;
-  final List<String> categories;
-  final bool isAnonymous;
 
   PostAnswerParams(
-      {required this.title,
+      {
+        required this.questionId,
       required this.description,
       this.image,
-      required this.categories,
-      required this.isAnonymous});
+ });
 }

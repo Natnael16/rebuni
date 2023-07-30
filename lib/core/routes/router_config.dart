@@ -5,6 +5,7 @@ import 'package:rebuni/features/questions/presentation/screen/question_detail_pa
 import '../../features/authentication/presentation/screen/login_screen.dart';
 import '../../features/authentication/presentation/screen/sign_up_profile.dart';
 import '../../features/authentication/presentation/screen/splash_screen.dart';
+import '../../features/questions/presentation/screen/add_answer.dart';
 import '../../features/questions/presentation/screen/answer_detail.dart';
 import '../../features/questions/presentation/screen/ask_question.dart';
 import '../../features/questions/presentation/screen/discussion_detail.dart';
@@ -42,25 +43,35 @@ class AppRouter extends StatelessWidget {
         GoRoute(
             path: path.home,
             builder: (BuildContext context, GoRouterState state) => HomePage()),
-        GoRoute(path: path.ask,
-        builder: (BuildContext context, GoRouterState state) => AskQuestion()),
-        GoRoute(path: path.questionDetail,
-        builder: (BuildContext context, GoRouterState state) {
-          var extra = state.extra as Map<String, dynamic>;
-          return QuestionDetail(question: extra['question']);}),
-          GoRoute(
+        GoRoute(
+            path: path.ask,
+            builder: (BuildContext context, GoRouterState state) =>
+                AskQuestion()),
+        GoRoute(
+            path: path.questionDetail,
+            builder: (BuildContext context, GoRouterState state) {
+              var extra = state.extra as Map<String, dynamic>;
+              return QuestionDetail(question: extra['question']);
+            }),
+        GoRoute(
             path: path.answerDetail,
             builder: (BuildContext context, GoRouterState state) {
               var extra = state.extra as Map<String, dynamic>;
-              return AnswerDetail(answer: extra['answer'], question: extra['question']);
+              return AnswerDetail(
+                  answer: extra['answer'], question: extra['question']);
             }),
-                    GoRoute(
+        GoRoute(
             path: path.discussionDetail,
             builder: (BuildContext context, GoRouterState state) {
               var extra = state.extra as Map<String, dynamic>;
               return DiscussionDetail(discussion: extra['discussion']);
             }),
-        
+        GoRoute(
+            path: path.addAnswer,
+            builder: (BuildContext context, GoRouterState state) {
+              var extra = state.extra as Map<String, dynamic>;
+              return AddAnswerPage(question: extra['question']);
+            }),
       ],
     );
   }

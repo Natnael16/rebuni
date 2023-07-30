@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../../../core/utils/colors.dart';
@@ -15,6 +18,7 @@ class QuestionCard extends StatelessWidget {
   final int descriptionLength;
   void Function()? onPressed;
   final bool isAnswer;
+  final bool isFormattedBody;
 
   QuestionCard(this.question,
       {super.key,
@@ -22,6 +26,7 @@ class QuestionCard extends StatelessWidget {
       required this.showActions,
       this.showImage = true,
       this.onPressed,
+      this.isFormattedBody = false,
       this.isAnswer = false});
 
   @override
@@ -35,7 +40,13 @@ class QuestionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            profileSection(textTheme, fullName: question.userProfile.fullName,createdAt: question.createdAt,isAnonymous: question.runtimeType is Question ? question.isAnonymous : false,profilePicture: question.userProfile.profilePicture),
+            profileSection(textTheme,
+                fullName: question.userProfile.fullName,
+                createdAt: question.createdAt,
+                isAnonymous: question.runtimeType is Question
+                    ? question.isAnonymous
+                    : false,
+                profilePicture: question.userProfile.profilePicture),
             InkWell(
               onTap: onPressed,
               child: Column(
@@ -44,21 +55,31 @@ class QuestionCard extends StatelessWidget {
                   SizedBox(
                     height: 1.h,
                   ),
-                  !isAnswer ? Text(
-                    question.title,
-                    style: textTheme.bodyMedium,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ) : const SizedBox(),
+                  !isAnswer
+                      ? Text(
+                          question.title,
+                          style: textTheme.bodyMedium,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : const SizedBox(),
                   SizedBox(
                     height: 1.h,
                   ),
-                  ExpandableText(
+                  isFormattedBody ?
+                  QuillEditor.basic(
+                controller: QuillController(
+                  document: Document.fromJson(json.decode(question.description)),
+                  selection: const TextSelection.collapsed(offset: -1),
+                ),
+                readOnly: true,
+
+              )
+                   : ExpandableText(
                     question.description,
                     linkTextStyle:
                         textTheme.labelSmall!.copyWith(fontSize: 14.sp),
                     trim: descriptionLength,
-                    
                     style: textTheme.bodySmall,
                   ),
                   SizedBox(

@@ -6,7 +6,7 @@ import 'package:rebuni/core/utils/colors.dart';
 
 import '../bloc/image_picker_bloc/image_picker_bloc.dart';
 
-class ImagePickerTextField extends StatelessWidget {
+class ImagePickerTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final IconData icon;
@@ -18,16 +18,25 @@ class ImagePickerTextField extends StatelessWidget {
     required this.icon,
   }) : super(key: key);
 
+  @override
+  State<ImagePickerTextField> createState() => _ImagePickerTextFieldState();
+}
+
+class _ImagePickerTextFieldState extends State<ImagePickerTextField> {
+  
+  addImagePickerEvent(File file) {
+    BlocProvider.of<ImagePickerBloc>(context).add(AddImageEvent(file));
+  }
+
   Future<void> _pickImage(BuildContext context) async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
       final file = File(image.path);
       // You can process the file here
-
-      BlocProvider.of<ImagePickerBloc>(context).add(AddImageEvent(file));
-
+      addImagePickerEvent(file);
+      
       final imageName = file.path.split('/').last;
-      controller.text = imageName;
+      widget.controller.text = imageName;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No image selected')),
@@ -45,11 +54,11 @@ class ImagePickerTextField extends StatelessWidget {
         children: [
           Expanded(
             child: TextFormField(
-              controller: controller,
+              controller: widget.controller,
               enabled: false,
               decoration: InputDecoration(
-                  hintText: hintText,
-                  prefixIcon: Icon(icon),
+                  hintText: widget.hintText,
+                  prefixIcon: Icon(widget.icon),
                   border: InputBorder.none,
                   filled: true,
                   fillColor: textFieldColor),
