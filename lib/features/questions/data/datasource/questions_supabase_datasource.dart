@@ -25,6 +25,14 @@ abstract class SupabaseQuestionsDataSource {
   Future<List<DiscussionModel>> getDiscussions(String questionId);
 
   Future<List<ReplyModel>> getReplies(String id, bool isAnswer);
+
+  Future<bool> addReply(String id, String body, bool isQuestion);
+
+  Future<bool> postAnswer({
+    required String questionId,
+    required String description,
+    File? image,
+  });
 }
 
 class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
@@ -72,7 +80,8 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
     final response = await supabaseClient
         .from('questions')
         .select()
-        .range(curIndex, curIndex + limit - 1);
+        .range(curIndex, curIndex + limit - 1)
+        .order('created_at', ascending: false);
 
     final questionsList = response;
     final List<QuestionModel> questions = [];
@@ -200,7 +209,8 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
     final response = await supabaseClient
         .from('discussions')
         .select()
-        .eq('question_id', questionId);
+        .eq('question_id', questionId)
+        .order('created_at', ascending: false);
 
     final discussionList = response as List<dynamic>;
     if (discussionList.isEmpty) {
@@ -228,7 +238,7 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
   Future<List<ReplyModel>> getReplies(String id, bool isAnswer) async {
     final response = await supabaseClient.from('replys').select().eq(
         isAnswer ? 'answer_id' : 'discussion_id',
-        isAnswer ? int.parse(id) : id);
+        isAnswer ? int.parse(id) : id).order('created_at', ascending: false);
 
     final replyList = response as List<dynamic>;
     if (replyList.isEmpty) {
@@ -249,5 +259,58 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
     }).toList();
 
     return await Future.wait(replies);
+  }
+
+  @override
+  Future<bool> addReply(String id, String body, bool isQuestion) async {
+    try {
+      int? integerId = int.tryParse(id);
+      final data = {
+        isQuestion
+            ? 'question_id'
+            : integerId == null
+                ? "discussion_id"
+
+                : 'answer_id': id,
+        'body': body,
+        'user_id': supabaseClient.auth.currentUser!.id
+      };
+      // Perform the insert operation in the questions table
+      final response = await supabaseClient
+          .from(isQuestion ? 'discussions' : 'replys')
+          .insert(data);
+
+      // Check if the insert operation was successful and return the appropriate result
+      return response == null;
+    } catch (e) {
+      return false;
+    }
+  }
+  
+  @override
+  Future<bool> postAnswer({required String questionId, required String description, File? image}) async {
+    try {
+      // Upload the file to Cloudinary
+      String? imageUrl = image != null
+          ? await cloudinaryUpload(
+              image, supabaseClient.auth.currentUser!.id, 'answer-images')
+          : null;
+
+      // Prepare the data to be inserted into the questions table
+      final data = {
+        'question_id': questionId,
+        'description': description,
+        'image_url': imageUrl,
+        'user_id': supabaseClient.auth.currentUser!.id,
+      };
+      // Perform the insert operation in the questions table
+      final response = await supabaseClient.from('answers').insert(data);
+
+      // Check if the insert operation was successful and return the appropriate result
+      return response == null;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 }

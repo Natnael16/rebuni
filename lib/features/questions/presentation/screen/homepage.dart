@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.5.h),
             decoration: BoxDecoration(
-                color: secondaryColor, borderRadius: BorderRadius.circular(20)),
+                color: primaryColor, borderRadius: BorderRadius.circular(20)),
             child: Row(
               children: [
                 Text("Ask", style: textTheme.bodySmall!.copyWith(color: white)),

@@ -25,7 +25,13 @@ abstract class QuestionsRepository {
 
   Future<Either<Failure, List<Reply>>> getReplies(String id, bool isAnswer);
 
+  Future<Either<Failure, bool>> addReply(
+      {required String id, required String body, required bool isQuestion});
 
-
-
+  Future<Either<Failure, bool>> postAnswer({
+    required String questionId,
+    required String description,
+    File? image,
+  });
+  
 }

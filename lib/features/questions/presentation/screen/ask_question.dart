@@ -16,6 +16,7 @@ import '../bloc/post_question_bloc/questions_bloc.dart';
 import '../widget/categories_drop_down.dart';
 import '../../../../core/shared_widgets/custom_round_button.dart';
 import '../widget/image_picker_text_field.dart';
+import '../widget/top_snack_bar.dart';
 
 class AskQuestion extends StatefulWidget {
   AskQuestion({super.key});
@@ -32,7 +33,7 @@ class _AskQuestionState extends State<AskQuestion> {
   final _titleController = TextEditingController();
   final _categoryController = TextEditingController();
   final imagePickerController = TextEditingController();
-  
+
   CategorySelectorBloc? _categorySelectorBloc;
   ImagePickerBloc? _imagePickerBloc;
   GetQuestionsBloc? _getQuestionsBloc;
@@ -53,7 +54,6 @@ class _AskQuestionState extends State<AskQuestion> {
     _titleController.dispose();
     _categorySelectorBloc?.add(AddCategoriesEvent([]));
     _imagePickerBloc?.add(RemoveImageEvent());
-    
 
     super.dispose();
   }
@@ -174,8 +174,7 @@ class _AskQuestionState extends State<AskQuestion> {
                             height: 1.h,
                           ),
                           CategoriesDropDown(
-                            categoryController: _categoryController 
-                          ),
+                              categoryController: _categoryController),
                           SizedBox(
                             height: 1.h,
                           ),
@@ -237,29 +236,11 @@ class _AskQuestionState extends State<AskQuestion> {
                               listener: (context, state) {
                                 if (state is PostQuestionSuccess) {
                                   _getQuestionsBloc?.add(RefreshQuestions());
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Row(
-                                        children: [
-                                          Text(
-                                            "Posted Successfully",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium!
-                                                .copyWith(color: white),
-                                          ),
-                                          Spacer(),
-                                          const Icon(Icons.check_circle_outline,
-                                              color: white)
-                                        ],
-                                      ),
-                                      elevation: 5,
-                                      backgroundColor: primaryColor,
-                                      behavior: SnackBarBehavior.floating,
-                                      dismissDirection:
-                                          DismissDirection.horizontal,
-                                    ),
-                                  );
+                                  showTopSnackBar(
+                                      context,
+                                      TopSnackBar(
+                                          message: "Posted Successfully",
+                                          error: false));
 
                                   context.pop();
                                 } else if (state is PostQuestionFailure) {
@@ -309,9 +290,11 @@ class _AskQuestionState extends State<AskQuestion> {
   }
 
   onAskNowPressed() {
-    CategorySelectorState categoryState = _categorySelectorBloc!.state;
+    CategorySelectorState categoryState =
+        BlocProvider.of<CategorySelectorBloc>(context).state;
 
-    ImagePickerState imagePickerState = _imagePickerBloc!.state;
+    ImagePickerState imagePickerState =
+        BlocProvider.of<ImagePickerBloc>(context).state;
 
     File? image;
     image =
@@ -324,7 +307,6 @@ class _AskQuestionState extends State<AskQuestion> {
     }
     if (!_formKey.currentState!.validate() ||
         categoryState.categories.isEmpty) {
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
