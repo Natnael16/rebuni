@@ -4,7 +4,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import '../../../../core/utils/colors.dart';
 
 class CustomTextField extends StatefulWidget {
-  CustomTextField({
+  const CustomTextField({
     this.isNumber = false,
     required this.borderRadius,
     required this.icon,
@@ -75,7 +75,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   child: Text(_errorText!,
                       style: const TextStyle(color: Colors.red)),
                 ))
-            : SizedBox()
+            : const SizedBox()
       ],
     );
   }

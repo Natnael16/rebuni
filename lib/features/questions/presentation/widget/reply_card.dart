@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rebuni/features/questions/presentation/widget/question_actions.dart';
 
-import '../../domain/entity/answer.dart';
 import '../../domain/entity/reply.dart';
 import 'question_card.dart';
 

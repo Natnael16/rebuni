@@ -12,5 +12,5 @@ class CompleteProfile extends SignUpEvent {
   final String? bio;
   final File? profilePicture;
 
-  CompleteProfile({required this.fullName, this.bio, this.profilePicture});
+  const CompleteProfile({required this.fullName, this.bio, this.profilePicture});
 }

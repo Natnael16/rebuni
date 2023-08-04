@@ -3,7 +3,7 @@ import '../../domain/entity/user_profile.dart';
 import 'vote_model.dart';
 
 class DiscussionModel extends Discussion {
-  DiscussionModel({
+  const DiscussionModel({
     required String discussionId,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -42,6 +42,7 @@ class DiscussionModel extends Discussion {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'discussionId': discussionId,

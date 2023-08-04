@@ -9,7 +9,7 @@ class UniqueProgressIndicator extends StatelessWidget {
   final double strokeWidth;
   final Duration duration;
 
-  UniqueProgressIndicator({
+  const UniqueProgressIndicator({super.key, 
     this.size = 50.0,
     this.color = primaryColor,
     this.strokeWidth = 3.0,

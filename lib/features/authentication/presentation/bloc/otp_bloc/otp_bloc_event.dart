@@ -11,5 +11,5 @@ class VerifyOTP extends OtpBlocEvent {
   final String otp;
   final String phoneNumber;
 
-  VerifyOTP(this.otp, this.phoneNumber);
+  const VerifyOTP(this.otp, this.phoneNumber);
 }

@@ -12,7 +12,7 @@ class GetRepliesInitial extends GetRepliesState {}
 class GetRepliesSuccess extends GetRepliesState {
   final List<Reply> replies;
 
-  GetRepliesSuccess(this.replies);
+  const GetRepliesSuccess(this.replies);
 }
 
 class GetRepliesLoading extends GetRepliesState {}

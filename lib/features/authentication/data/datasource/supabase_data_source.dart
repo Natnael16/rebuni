@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:supabase/supabase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/utils/cloudinary.dart';

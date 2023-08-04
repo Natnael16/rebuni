@@ -12,7 +12,7 @@ class AddAnswer extends AddAnswerEvent {
   final String description;
   final File? image;
 
-  AddAnswer(
+  const AddAnswer(
     {
     required this.questionId,
     required this.description,

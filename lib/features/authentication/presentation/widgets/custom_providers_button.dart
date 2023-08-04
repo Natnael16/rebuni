@@ -7,8 +7,8 @@ class ProviderButtons extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
   final Widget icon;
-  ProviderButtons(
-      {required this.icon, required this.buttonText, required this.onPressed});
+  const ProviderButtons(
+      {super.key, required this.icon, required this.buttonText, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

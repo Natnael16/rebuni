@@ -68,7 +68,7 @@ class _SignUpState extends State<SignUp> {
                             shape: OvalBorder(),
                           ),
                           child: image == null
-                              ? Icon(Icons.add_a_photo_outlined)
+                              ? const Icon(Icons.add_a_photo_outlined)
                               : ClipOval(
                                   child:
                                       Image.file(image!, fit: BoxFit.cover))),
@@ -85,7 +85,7 @@ class _SignUpState extends State<SignUp> {
                                 shape: OvalBorder(),
                               ),
                               child:
-                                  Center(child: Icon(Icons.add, color: white))),
+                                  const Center(child: Icon(Icons.add, color: white))),
                         ),
                       ),
                     ]),
@@ -139,7 +139,7 @@ class _SignUpState extends State<SignUp> {
             ),
             BlocConsumer<SignUpBloc, SignUpState>(builder: (context, state) {
               if (state is SignUpLoading) {
-                return UniqueProgressIndicator();
+                return const UniqueProgressIndicator();
               }
 
               return CustomButton(

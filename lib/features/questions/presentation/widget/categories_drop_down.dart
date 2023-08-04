@@ -6,7 +6,6 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../../../core/shared_widgets/shimmer.dart';
 import '../../../../core/utils/colors.dart';
-import '../../../../core/utils/validators.dart';
 
 class CategoriesDropDown extends StatefulWidget {
   const CategoriesDropDown({super.key, required this.categoryController});
@@ -63,7 +62,7 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
                   }),
                 ],
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               // Dropdown
               Row(
                 children: [
@@ -77,7 +76,7 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
                             .labelSmall!
                             .copyWith(color: black),
                         decoration: InputDecoration(
-                          suffixIcon: Icon(Icons.arrow_drop_down_circle_sharp,
+                          suffixIcon: const Icon(Icons.arrow_drop_down_circle_sharp,
                               color: secondaryColor),
                           filled: true,
                           fillColor: textFieldColor,

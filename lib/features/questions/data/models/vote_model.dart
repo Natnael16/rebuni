@@ -22,6 +22,7 @@ class VoteModel extends Vote {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'voteId': voteId,

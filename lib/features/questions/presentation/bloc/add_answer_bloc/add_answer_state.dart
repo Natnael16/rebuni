@@ -17,5 +17,5 @@ class AddAnswerSuccess extends AddAnswerState {}
 class AddAnswerFailure extends AddAnswerState {
   final String errorMessage;
 
-  AddAnswerFailure(this.errorMessage);
+  const AddAnswerFailure(this.errorMessage);
 }

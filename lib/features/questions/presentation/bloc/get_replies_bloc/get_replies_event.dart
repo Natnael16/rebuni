@@ -11,5 +11,5 @@ class GetReplies extends GetRepliesEvent {
   final String id;
   final bool isAnswer;
 
-  GetReplies(this.id,this.isAnswer);
+  const GetReplies(this.id,this.isAnswer);
 }

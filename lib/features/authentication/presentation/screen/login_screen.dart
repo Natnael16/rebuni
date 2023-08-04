@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl_phone_field/phone_number.dart';
 import 'package:rebuni/features/authentication/presentation/bloc/provider_sign_in/provider_sign_in_bloc.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -11,7 +10,6 @@ import '../../../../core/routes/paths.dart' as path;
 import '../../../../core/shared_widgets/custom_loading_widget.dart';
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/images.dart';
-import '../../../../core/utils/validators.dart';
 import '../../../../main.dart';
 import '../../domain/use_cases/profile_usecase.dart';
 import '../bloc/sign_in_bloc/sign_in_bloc.dart';
@@ -20,6 +18,8 @@ import '../widgets/custom_providers_button.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                   BlocConsumer<SignInBloc, SignInState>(
                       builder: (context, SignInState state) {
                     if (state is SignInLoading) {
-                      return UniqueProgressIndicator();
+                      return const UniqueProgressIndicator();
                     } else {
                       return CustomButton(
                         borderRadius: 4,
@@ -112,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
               return Column(
                 children: [
                   (state is ProviderSignInLoading && state.provider == "Google")
-                      ? UniqueProgressIndicator()
+                      ? const UniqueProgressIndicator()
                       : ProviderButtons(
                           buttonText: "Continue with Google",
                           icon: Image(
@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 2.h),
                   (state is ProviderSignInLoading &&
                           state.provider == "Facebook")
-                      ? UniqueProgressIndicator()
+                      ? const UniqueProgressIndicator()
                       : ProviderButtons(
                           buttonText: "Continue with Facebook",
                           icon: Image(
@@ -148,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return UniqueProgressIndicator();
+                    return const UniqueProgressIndicator();
                   },
                 );
                 supabase.auth.onAuthStateChange.listen((data) {

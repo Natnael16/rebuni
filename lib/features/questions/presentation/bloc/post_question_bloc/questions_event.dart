@@ -14,7 +14,7 @@ class PostQuestion extends QuestionsEvent {
   final List<String> categories;
   final bool isAnonymous;
 
-  PostQuestion(
+  const PostQuestion(
       {required this.title,
       required this.description,
       this.image,

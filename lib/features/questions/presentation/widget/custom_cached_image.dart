@@ -5,7 +5,7 @@ import '../../../../core/shared_widgets/shimmer.dart';
 import '../../../../core/utils/colors.dart';
 
 class CustomizedCachedImage extends StatelessWidget {
-  CustomizedCachedImage(
+  const CustomizedCachedImage(
       {required this.imageURL,
       this.width,
       this.height,
@@ -28,7 +28,7 @@ class CustomizedCachedImage extends StatelessWidget {
               ],
             ),
         //! Add error Icon
-        errorWidget: (_, String url, error) => Icon(Icons.error),
+        errorWidget: (_, String url, error) => const Icon(Icons.error),
         imageBuilder: (_, ImageProvider imageProvider) => Container(
             height: height,
             width: width,

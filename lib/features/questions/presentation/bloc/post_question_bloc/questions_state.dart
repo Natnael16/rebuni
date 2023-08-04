@@ -16,5 +16,5 @@ class PostQuestionSuccess extends QuestionsState {}
 class PostQuestionFailure extends QuestionsState {
   final String errorMessage;
 
-  PostQuestionFailure(this.errorMessage);
+  const PostQuestionFailure(this.errorMessage);
 }

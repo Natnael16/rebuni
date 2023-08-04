@@ -17,7 +17,7 @@ import '../widget/reply_card.dart';
 class AnswerDetail extends StatefulWidget {
   final Answer answer;
   final Question question;
-  AnswerDetail({super.key, required this.answer, required this.question});
+  const AnswerDetail({super.key, required this.answer, required this.question});
 
   @override
   State<AnswerDetail> createState() => _AnswerDetailState();
@@ -44,6 +44,7 @@ class _AnswerDetailState extends State<AnswerDetail> {
           },
           child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 2.w),

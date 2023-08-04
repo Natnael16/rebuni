@@ -15,10 +15,10 @@ BottomNavigationBarItem buildBottomNavigationBarItem(
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
             blurRadius: 2,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
-        color: Color.fromARGB(255, 198, 231, 220),
+        color: const Color.fromARGB(255, 198, 231, 220),
         borderRadius: BorderRadius.circular(10),
       ),
       child: SvgPicture.asset(asset, color: activeColor),
