@@ -14,11 +14,11 @@ class GetAnswersLoading extends GetAnswersState {}
 class GetAnswersSuccess extends GetAnswersState {
   final List<Answer> answerList;
 
-  GetAnswersSuccess(this.answerList);
+  const GetAnswersSuccess(this.answerList);
 }
 
 class GetAnswersFailure extends GetAnswersState {
   final String errorMessage;
 
-  GetAnswersFailure(this.errorMessage);
+  const GetAnswersFailure(this.errorMessage);
 }

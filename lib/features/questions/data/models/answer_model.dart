@@ -31,6 +31,7 @@ class AnswerModel extends Answer {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'answerId': answerId,

@@ -12,6 +12,6 @@ class AddDiscussion extends AddDiscussionEvent {
   final bool isQuestion;
   final String body;
 
-  AddDiscussion({required this.id, this.isQuestion = true, required this.body});
+  const AddDiscussion({required this.id, this.isQuestion = true, required this.body});
 }
 

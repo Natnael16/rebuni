@@ -10,6 +10,6 @@ abstract class GetDiscussionsEvent extends Equatable {
 class GetDiscussions extends GetDiscussionsEvent {
   final String questionId;
 
-  GetDiscussions(this.questionId);
+  const GetDiscussions(this.questionId);
 
 }

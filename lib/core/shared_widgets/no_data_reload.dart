@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:rebuni/core/shared_widgets/custom_round_button.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import '../utils/colors.dart';
 import '../utils/images.dart';
 
 class NoDataReload extends StatelessWidget {
@@ -19,8 +18,8 @@ class NoDataReload extends StatelessWidget {
       children: [
         SvgPicture.asset(
           noDataImage,
-          height: height == null ? 30.h : height,
-          width: width == null ? 15.h : width,
+          height: height ?? 30.h,
+          width: width ?? 15.h,
         ),
         SizedBox(height: 5.h),
         CustomRoundButton(

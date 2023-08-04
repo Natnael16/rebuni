@@ -16,5 +16,5 @@ class AddDiscussionSuccess extends AddDiscussionState {}
 class AddDiscussionFailure extends AddDiscussionState {
   final String errorMessage;
 
-  AddDiscussionFailure(this.errorMessage);
+  const AddDiscussionFailure(this.errorMessage);
 }

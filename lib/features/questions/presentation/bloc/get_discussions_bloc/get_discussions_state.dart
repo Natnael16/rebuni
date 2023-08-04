@@ -14,11 +14,11 @@ class GetDiscussionsLoading extends GetDiscussionsState {}
 class GetDiscussionsSuccess extends GetDiscussionsState {
   final List<Discussion> discussionList;
 
-  GetDiscussionsSuccess(this.discussionList);
+  const GetDiscussionsSuccess(this.discussionList);
 }
 
 class GetDiscussionsFailure extends GetDiscussionsState {
   final String errorMessage;
 
-  GetDiscussionsFailure(this.errorMessage);
+  const GetDiscussionsFailure(this.errorMessage);
 }

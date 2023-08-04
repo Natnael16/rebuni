@@ -134,12 +134,12 @@ class _AddAnswerPageState extends State<AddAnswerPage> {
                 listener: (context, state) {
                   if (state is AddAnswerFailure) {
                     showTopSnackBar(context,
-                        TopSnackBar(error: true, message: "Post Failed"));
+                        const TopSnackBar(error: true, message: "Post Failed"));
                   }
                   if (state is AddAnswerSuccess) {
                     showTopSnackBar(
                         context,
-                        TopSnackBar(
+                        const TopSnackBar(
                             error: false, message: "Answered Successfully!"));
                     BlocProvider.of<GetAnswersBloc>(context)
                         .add(GetAnswers(widget.question.questionId));
@@ -148,7 +148,7 @@ class _AddAnswerPageState extends State<AddAnswerPage> {
                 },
                 builder: (context, state) {
                   if (state is AddAnswerLoading) {
-                    return Align(
+                    return const Align(
                         alignment: Alignment.center,
                         child: UniqueProgressIndicator());
                   }
@@ -175,7 +175,7 @@ class _AddAnswerPageState extends State<AddAnswerPage> {
     if (description.length < 20) {
       showTopSnackBar(
           context,
-          TopSnackBar(
+          const TopSnackBar(
               error: true, message: "Answer Should at least be 20 characters"));
       return;
     }

@@ -5,7 +5,6 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failure.dart';
 import '../../domain/repository/sign_is_repository.dart';
 import '../datasource/supabase_data_source.dart';
-import '../model/user_model.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final SupabaseDataSource supabaseDataSource;
@@ -19,7 +18,7 @@ class UserRepositoryImpl implements UserRepository {
       if (status == true) {
         return const Right(true);
       } else {
-        return Left(ServerFailure('User not found'));
+        return const Left(ServerFailure('User not found'));
       }
     } catch (e) {
       return Left(ServerFailure('Sign-in failed: $e'));
@@ -34,7 +33,7 @@ class UserRepositoryImpl implements UserRepository {
       if (status == true) {
         return const Right(true);
       } else {
-        return Left(ServerFailure('Server error'));
+        return const Left(ServerFailure('Server error'));
       }
     } catch (e) {
       return Left(ServerFailure('Sign-in failed: $e'));
@@ -49,7 +48,7 @@ class UserRepositoryImpl implements UserRepository {
       if (status == true) {
         return const Right(true);
       } else {
-        return Left(ServerFailure('Sign-in failed'));
+        return const Left(ServerFailure('Sign-in failed'));
       }
     } catch (e) {
       return Left(ServerFailure('Sign-in failed: $e'));
@@ -63,7 +62,7 @@ class UserRepositoryImpl implements UserRepository {
       if (respose == true) {
         return const Right(true);
       } else {
-        return Left(ServerFailure('Is not first time user'));
+        return const Left(ServerFailure('Is not first time user'));
       }
     } catch (e) {
       return Left(ServerFailure("Server error: $e"));
@@ -77,7 +76,7 @@ class UserRepositoryImpl implements UserRepository {
       if (respose == true) {
         return const Right(true);
       } else {
-        return Left(ServerFailure('Server error'));
+        return const Left(ServerFailure('Server error'));
       }
     } catch (e) {
       return Left(ServerFailure("Sign in failed : $e"));

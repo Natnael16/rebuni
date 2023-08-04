@@ -19,7 +19,7 @@ class Question extends Equatable {
   final bool isAnonymous;
   final List<String> categories;
 
-  Question(
+  const Question(
       {required this.questionId,
       required this.createdAt,
       required this.title,

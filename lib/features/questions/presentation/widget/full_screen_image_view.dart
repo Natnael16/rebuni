@@ -6,14 +6,14 @@ import '../../../../core/shared_widgets/custom_loading_widget.dart';
 class FullScreenImageViewer extends StatelessWidget {
   final String imagePath;
 
-  FullScreenImageViewer({required this.imagePath});
+  const FullScreenImageViewer({super.key, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: PhotoView(
         loadingBuilder: (context,event){
-          return UniqueProgressIndicator();
+          return const UniqueProgressIndicator();
         },
         imageProvider: NetworkImage(imagePath),
         minScale: PhotoViewComputedScale.contained * 0.8,

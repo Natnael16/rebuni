@@ -1,7 +1,7 @@
 import '../../domain/entity/user_profile.dart';
 
 class UserProfileModel extends UserProfile {
-  UserProfileModel({
+  const UserProfileModel({
     required super.userProfileId,
     required super.createdAt,
     required super.userId,
@@ -29,6 +29,7 @@ class UserProfileModel extends UserProfile {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'userProfileId': userProfileId,

@@ -19,7 +19,7 @@ class TopSnackBar extends StatelessWidget {
   final String message;
   final bool error;
 
-  TopSnackBar({required this.message, required this.error});
+  const TopSnackBar({super.key, required this.message, required this.error});
 
   @override
   Widget build(BuildContext context) {

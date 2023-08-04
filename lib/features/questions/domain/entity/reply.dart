@@ -13,7 +13,7 @@ class Reply extends Equatable {
   final Vote vote;
   final UserProfile userProfile;
 
-  Reply({
+  const Reply({
     required this.answerId,
     required this.discussionId,
     required this.replyId,

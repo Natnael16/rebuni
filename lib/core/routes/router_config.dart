@@ -32,7 +32,7 @@ class AppRouter extends StatelessWidget {
         ),
         GoRoute(
           path: path.login,
-          builder: (BuildContext context, GoRouterState state) => LoginPage(),
+          builder: (BuildContext context, GoRouterState state) => const LoginPage(),
         ),
         GoRoute(
             path: path.otp,
@@ -42,11 +42,11 @@ class AppRouter extends StatelessWidget {
             }),
         GoRoute(
             path: path.home,
-            builder: (BuildContext context, GoRouterState state) => HomePage()),
+            builder: (BuildContext context, GoRouterState state) => const HomePage()),
         GoRoute(
             path: path.ask,
             builder: (BuildContext context, GoRouterState state) =>
-                AskQuestion()),
+                const AskQuestion()),
         GoRoute(
             path: path.questionDetail,
             builder: (BuildContext context, GoRouterState state) {

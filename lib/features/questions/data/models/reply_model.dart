@@ -4,7 +4,7 @@ import 'vote_model.dart';
 
 class ReplyModel extends Reply {
 
-  ReplyModel({
+  const ReplyModel({
     required String discussionId,
     required String answerId,
     required String replyId,

@@ -15,7 +15,7 @@ class Discussion extends Equatable {
   final String questionId;
   final String postId;
 
-  Discussion({
+  const Discussion({
     required this.discussionId,
     required this.createdAt,
     required this.updatedAt,

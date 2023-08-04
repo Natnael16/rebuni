@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failure.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entity/user.dart';
 import '../repository/sign_is_repository.dart';
 
 class VerifyOTPUseCase implements UseCase<bool, VerifyOTPParams> {

@@ -22,7 +22,7 @@ void main() async {
     builder: (context, orientation, screenType) {
       return MultiBlocProvider(
         providers: getAllBlocProviders(),
-        child: MyApp(),
+        child: const MyApp(),
       );
     },
   ));

@@ -3,7 +3,7 @@ import '../../domain/entity/user_profile.dart';
 import 'vote_model.dart';
 
 class QuestionModel extends Question {
-  QuestionModel({
+  const QuestionModel({
     required String questionId,
     required DateTime createdAt,
     required String title,

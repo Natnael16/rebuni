@@ -1,4 +1,3 @@
-import 'package:get_it/get_it.dart';
 import 'package:rebuni/features/authentication/domain/use_cases/check_first_time_login_use_case.dart';
 import 'package:rebuni/features/authentication/presentation/bloc/otp_bloc/otp_bloc_bloc.dart';
 

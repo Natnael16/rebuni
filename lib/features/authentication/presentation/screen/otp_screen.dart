@@ -89,7 +89,7 @@ class _OTPScreenState extends State<OTPScreen> {
               BlocConsumer<OtpBlocBloc, OtpBlocState>(
                   builder: (context, state) {
                 if (state is VerifyOtpLoading) {
-                  return Center(child: UniqueProgressIndicator());
+                  return const Center(child: UniqueProgressIndicator());
                 } else {
                   return Center(
                     child: CustomButton(

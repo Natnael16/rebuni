@@ -19,7 +19,7 @@ import '../widget/image_picker_text_field.dart';
 import '../widget/top_snack_bar.dart';
 
 class AskQuestion extends StatefulWidget {
-  AskQuestion({super.key});
+  const AskQuestion({super.key});
 
   @override
   State<AskQuestion> createState() => _AskQuestionState();
@@ -52,7 +52,7 @@ class _AskQuestionState extends State<AskQuestion> {
   void dispose() {
     _descriptionController.dispose();
     _titleController.dispose();
-    _categorySelectorBloc?.add(AddCategoriesEvent([]));
+    _categorySelectorBloc?.add(AddCategoriesEvent(const []));
     _imagePickerBloc?.add(RemoveImageEvent());
 
     super.dispose();
@@ -238,7 +238,7 @@ class _AskQuestionState extends State<AskQuestion> {
                                   _getQuestionsBloc?.add(RefreshQuestions());
                                   showTopSnackBar(
                                       context,
-                                      TopSnackBar(
+                                      const TopSnackBar(
                                           message: "Posted Successfully",
                                           error: false));
 
@@ -255,7 +255,7 @@ class _AskQuestionState extends State<AskQuestion> {
                                                 .bodyMedium!
                                                 .copyWith(color: white),
                                           ),
-                                          Spacer(),
+                                          const Spacer(),
                                           const Icon(Icons.cancel_outlined,
                                               color: white)
                                         ],
@@ -271,7 +271,7 @@ class _AskQuestionState extends State<AskQuestion> {
                               },
                               builder: (context, state) {
                                 if (state is PostQuestionLoading) {
-                                  return UniqueProgressIndicator();
+                                  return const UniqueProgressIndicator();
                                 }
                                 return CustomRoundButton(
                                     buttonText: 'Ask Now',

@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(backgroundColor: white, actions: [
         InkWell(
           onTap: () {
-            showDialog(context: context, builder: (context) => AskQuestion());
+            showDialog(context: context, builder: (context) => const AskQuestion());
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.5.h),
@@ -196,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                                                                     color:
                                                                         primaryColor),
                                                           )
-                                                        : UniqueProgressIndicator()),
+                                                        : const UniqueProgressIndicator()),
                                               )
                                             : const SizedBox()
                                       ],
@@ -221,7 +221,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ]),
-                Flex(
+                const Flex(
                   direction: Axis.vertical,
                   children: [
                     // Expanded(

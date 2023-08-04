@@ -12,7 +12,7 @@ class ImagePickerInitial extends ImagePickerState {}
 class ImageAddedState extends ImagePickerState {
   final File image;
   
-  ImageAddedState(this.image);
+  const ImageAddedState(this.image);
 
   @override
   List<Object> get props => [image];

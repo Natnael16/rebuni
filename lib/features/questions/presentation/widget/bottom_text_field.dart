@@ -32,21 +32,21 @@ Widget bottomTextField(
           listener: (context, state) {
             if (state is AddDiscussionSuccess) {
               showTopSnackBar(
-                  context, TopSnackBar(message: "Successful", error: false));
+                  context, const TopSnackBar(message: "Successful", error: false));
             }
             if (state is AddDiscussionFailure) {
               showTopSnackBar(
-                  context, TopSnackBar(message: "Failed", error: true));
+                  context, const TopSnackBar(message: "Failed", error: true));
             }
           },
           builder: (context, state) {
             if (state is AddDiscussionLoading) {
-              return UniqueProgressIndicator(size: 25);
+              return const UniqueProgressIndicator(size: 25);
             }
             return IconButton(
               color: primaryColor,
               onPressed: onPressed,
-              icon: Icon(
+              icon: const Icon(
                 Icons.send,
                 size: 25,
               ),

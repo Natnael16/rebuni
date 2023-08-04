@@ -10,5 +10,5 @@ abstract class GetAnswersEvent extends Equatable {
 class GetAnswers extends GetAnswersEvent {
   final String questionId;
 
-  GetAnswers(this.questionId);
+  const GetAnswers(this.questionId);
 }

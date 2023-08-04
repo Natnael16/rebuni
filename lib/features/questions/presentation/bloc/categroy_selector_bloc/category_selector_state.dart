@@ -10,5 +10,5 @@ abstract class CategorySelectorState extends Equatable {
 class CategorySelectorInitial extends CategorySelectorState {
   final List<String> categories;
 
-  CategorySelectorInitial([this.categories = const []]);
+  const CategorySelectorInitial([this.categories = const []]);
 }
