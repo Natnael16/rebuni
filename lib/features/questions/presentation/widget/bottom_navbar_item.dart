@@ -13,8 +13,8 @@ BottomNavigationBarItem buildBottomNavigationBarItem(
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            blurRadius: 2,
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 1,
             offset: const Offset(0, 3),
           ),
         ],

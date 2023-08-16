@@ -14,6 +14,7 @@ class DiscussionModel extends Discussion {
     required int numberOfReplies,
     required String postId,
     required String questionId,
+    required int userReaction,
   }) : super(
           discussionId: discussionId,
           createdAt: createdAt,
@@ -25,6 +26,7 @@ class DiscussionModel extends Discussion {
           numberOfReplies: numberOfReplies,
           postId: postId,
           questionId: questionId,
+          userReaction: userReaction
         );
 
   factory DiscussionModel.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,7 @@ class DiscussionModel extends Discussion {
       replyId: json['reply_id'] ?? "",
       numberOfReplies: json['number_of_replies'] as int,
       postId: json['post_id'] ?? "",
+      userReaction : json['user_reaction']
     );
   }
 

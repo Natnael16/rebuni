@@ -12,6 +12,7 @@ class Reply extends Equatable {
   final String description;
   final Vote vote;
   final UserProfile userProfile;
+  final int userReaction;
 
   const Reply({
     required this.answerId,
@@ -22,6 +23,7 @@ class Reply extends Equatable {
     required this.description,
     required this.vote,
     required this.userProfile,
+    required this.userReaction
   });
 
   @override

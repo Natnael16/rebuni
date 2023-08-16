@@ -13,11 +13,13 @@ class AnswerModel extends Answer {
     required super.imageUrl,
     required super.questionId,
     required super.isAnsweredForUser,
+    required super.userReaction
   });
 
   factory AnswerModel.fromJson(Map<String, dynamic> json) {
 
     return AnswerModel(
+      userReaction : json['user_reaction'],
       numberOfReplies: json['number_of_replies'],
       answerId: json['answer_id'] as int,
       createdAt: DateTime.parse(json['created_at']),

@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
+import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../../../core/routes/paths.dart' as path;
 import '../../../../core/utils/colors.dart';
 import '../../domain/entity/question.dart';
 import 'package:flutter_expandable_text/flutter_expandable_text.dart';
@@ -12,7 +14,7 @@ import 'custom_cached_image.dart';
 import 'profile_section.dart';
 
 class QuestionCard extends StatelessWidget {
-  final question;
+  final dynamic question;
   final Widget showActions;
   final bool showImage;
   final int descriptionLength;
@@ -68,13 +70,13 @@ class QuestionCard extends StatelessWidget {
                   ),
                   isFormattedBody ?
                   QuillEditor.basic(
-                controller: QuillController(
+                                controller: QuillController(
                   document: Document.fromJson(json.decode(question.description)),
-                  selection: const TextSelection.collapsed(offset: -1),
-                ),
-                readOnly: true,
-
-              )
+                  selection: const TextSelection.collapsed(offset: -1,affinity: TextAffinity.upstream),
+                                ),
+                                readOnly: true,
+                  
+                              )
                    : ExpandableText(
                     question.description,
                     linkTextStyle:
@@ -87,6 +89,7 @@ class QuestionCard extends StatelessWidget {
                   ),
                   showImage && question.imageUrl != ""
                       ? CustomizedCachedImage(
+                          fit: BoxFit.cover,
                           imageURL: question.imageUrl,
                           width: double.infinity,
                           height: 35.h,

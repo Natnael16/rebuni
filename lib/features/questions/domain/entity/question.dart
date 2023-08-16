@@ -18,6 +18,7 @@ class Question extends Equatable {
   final int numberOfDiscussions;
   final bool isAnonymous;
   final List<String> categories;
+  final int userReaction;
 
   const Question(
       {required this.questionId,
@@ -33,7 +34,9 @@ class Question extends Equatable {
       required this.userProfile,
       required this.numberOfDiscussions,
       required this.isAnonymous,
-      required this.categories});
+      required this.categories,
+      required this.userReaction
+      });
 
   @override
   List<Object?> get props => [

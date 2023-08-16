@@ -47,10 +47,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
         Container(
           width: widget.width,
           height: widget.height,
-          padding: EdgeInsets.symmetric(horizontal: (4).w),
+          // padding: EdgeInsets.symmetric(horizontal: (0).w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(widget.borderRadius),
-            color: textFieldColor,
+            color: white,
           ),
           child: TextFormField(
             validator:widget.validator, 
@@ -67,6 +67,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
               // });
             },
             decoration: InputDecoration(
+              filled: true,
+              fillColor: textFieldColor,
               icon: widget.icon != null ? Icon(widget.icon, color: textFieldGrayColor, size: (2.5).h) : null,
               hintText: widget.hintText,
               hintStyle: Theme.of(context).textTheme.labelSmall,

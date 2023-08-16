@@ -8,6 +8,7 @@ import '../../features/questions/domain/usecase/get_discussions_usecase.dart';
 import '../../features/questions/domain/usecase/get_questions_usecase.dart';
 import '../../features/questions/domain/usecase/get_replies_usecase.dart';
 import '../../features/questions/domain/usecase/post_question_usecase.dart';
+import '../../features/questions/domain/usecase/vote_usecase.dart';
 import '../../features/questions/presentation/bloc/add_answer_bloc/add_answer_bloc.dart';
 import '../../features/questions/presentation/bloc/add_discussion_bloc/add_discussion_bloc.dart';
 import '../../features/questions/presentation/bloc/get_answers_bloc/get_answers_bloc.dart';
@@ -33,6 +34,7 @@ Future<void> questionsInjectionInit() async {
   getIt.registerLazySingleton(() => GetRepliesUseCase(getIt()));
   getIt.registerLazySingleton(() => AddDiscussionUseCase(getIt()));
   getIt.registerLazySingleton(() => PostAnswerUseCase(getIt()));
+  getIt.registerLazySingleton(() => VoteUseCase(getIt()));
 
   getIt.registerLazySingleton<QuestionsRepository>(() => QuestionsRepositoryImpl(getIt()));
 

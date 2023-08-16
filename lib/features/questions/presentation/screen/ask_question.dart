@@ -57,22 +57,14 @@ class _AskQuestionState extends State<AskQuestion> {
 
     super.dispose();
   }
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-
-  //   _categorySelectorBloc ??= BlocProvider.of<CategorySelectorBloc>(context);
-  //   _imagePickerBloc ??= BlocProvider.of<ImagePickerBloc>(context);
-  //   _getQuestionsBloc ??= BlocProvider.of<GetQuestionsBloc>(context);
-  // }
 
   @override
   Widget build(BuildContext context) {
     return FlexibleBottomSheet(
         bottomSheetColor: black.withOpacity(0),
-        initHeight: 0.9,
-        maxHeight: 0.9,
-        minHeight: 0.89999,
+        initHeight: 0.7,
+        maxHeight: 0.85,
+        minHeight: 0.69999,
         decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
@@ -146,7 +138,7 @@ class _AskQuestionState extends State<AskQuestion> {
                           ),
                           CustomTextField(
                               multiline: true,
-                              height: 23.h,
+                              // height: 23.h,
                               width: MediaQuery.of(context).size.width,
                               hintText: "Write a discription for your question",
                               borderRadius: 4,

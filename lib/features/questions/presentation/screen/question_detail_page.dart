@@ -12,6 +12,7 @@ import '../../../../core/utils/colors.dart';
 import '../../domain/entity/question.dart';
 import '../bloc/get_answers_bloc/get_answers_bloc.dart';
 import '../bloc/get_discussions_bloc/get_discussions_bloc.dart';
+import '../bloc/vote_bloc/vote_bloc.dart';
 import '../widget/answer_card.dart';
 import '../widget/bottom_text_field.dart';
 import '../widget/custom_cached_image.dart';
@@ -21,19 +22,26 @@ import '../widget/full_screen_image_view.dart';
 
 class QuestionDetail extends StatefulWidget {
   final Question question;
-  const QuestionDetail({super.key, required this.question});
+  final int tabIndex;
+  const QuestionDetail(
+      {super.key, required this.question, required this.tabIndex});
 
   @override
   State<QuestionDetail> createState() => _QuestionDetailState();
 }
 
 class _QuestionDetailState extends State<QuestionDetail> {
+  Map<String, VoteBloc> voteBlocAnswerMap = {};
+  Map<String, VoteBloc> voteBlocDiscussionMap = {};
+  late int tabIndex;
+
   @override
   initState() {
     BlocProvider.of<GetAnswersBloc>(context)
         .add(GetAnswers(widget.question.questionId));
     BlocProvider.of<GetDiscussionsBloc>(context)
         .add(GetDiscussions(widget.question.questionId));
+    tabIndex = widget.tabIndex;
     super.initState();
   }
 
@@ -44,14 +52,16 @@ class _QuestionDetailState extends State<QuestionDetail> {
     super.dispose();
   }
 
-  int tabIndex = 0;
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(actions: [
         InkWell(
           onTap: () {
-            context.push(path.addAnswer,extra : {'question' : widget.question});
+            context.push(path.addAnswer, extra: {'question': widget.question});
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.5.h),
@@ -113,6 +123,7 @@ class _QuestionDetailState extends State<QuestionDetail> {
               descriptionLength: widget.question.description.length,
             ),
             DefaultTabController(
+              initialIndex: tabIndex,
               length: 2,
               child: TabBar(
                 onTap: (index) {
@@ -163,8 +174,7 @@ class _QuestionDetailState extends State<QuestionDetail> {
   }
 
   Widget tagsSection(BuildContext context) {
-    return Column( crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text("Categories:", style: Theme.of(context).textTheme.bodyMedium),
       SizedBox(
         height: 1.h,
@@ -207,9 +217,11 @@ class _QuestionDetailState extends State<QuestionDetail> {
                             onPressed: () {
                               context.push(path.answerDetail, extra: {
                                 'answer': state.answerList[index],
-                                'question': widget.question
+                                'question': widget.question,
+                                'voteBlocAnswerMap': voteBlocAnswerMap
                               });
                             },
+                            voteBlocMap: voteBlocAnswerMap,
                             answer: state.answerList[index]),
                       ),
                     ],
@@ -259,9 +271,12 @@ class _QuestionDetailState extends State<QuestionDetail> {
                       Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: DiscussionCard(
+                            
+                              voteBlocMap: voteBlocDiscussionMap,
                               onPressed: () {
                                 context.push(path.discussionDetail, extra: {
-                                  'discussion': state.discussionList[index]
+                                  'discussion': state.discussionList[index],
+                                  'voteBlocDiscussionMap': voteBlocDiscussionMap
                                 });
                               },
                               discussion: state.discussionList[index])),

@@ -8,6 +8,7 @@ import '../../domain/entity/answer.dart';
 import '../../domain/entity/question.dart';
 import '../bloc/add_discussion_bloc/add_discussion_bloc.dart';
 import '../bloc/get_replies_bloc/get_replies_bloc.dart';
+import '../bloc/vote_bloc/vote_bloc.dart';
 import '../widget/answer_card.dart';
 import '../widget/bottom_text_field.dart';
 import '../widget/custom_cached_image.dart';
@@ -17,7 +18,8 @@ import '../widget/reply_card.dart';
 class AnswerDetail extends StatefulWidget {
   final Answer answer;
   final Question question;
-  const AnswerDetail({super.key, required this.answer, required this.question});
+  Map<String, VoteBloc> voteBlocAnswerMap;
+  AnswerDetail({super.key, required this.answer, required this.question,required this.voteBlocAnswerMap});
 
   @override
   State<AnswerDetail> createState() => _AnswerDetailState();
@@ -25,6 +27,7 @@ class AnswerDetail extends StatefulWidget {
 
 class _AnswerDetailState extends State<AnswerDetail> {
   final replyTextEditingController = TextEditingController();
+  Map<String, VoteBloc> voteBlocMap = {};
   @override
   initState() {
     BlocProvider.of<GetRepliesBloc>(context)
@@ -44,7 +47,7 @@ class _AnswerDetailState extends State<AnswerDetail> {
           },
           child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: EdgeInsets.only(left: 2.w),
@@ -68,15 +71,13 @@ class _AnswerDetailState extends State<AnswerDetail> {
                 padding: EdgeInsets.only(left: 2.w),
                 child: Text(widget.question.description,
                     textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontSize: 15.sp, fontWeight: FontWeight.w400)),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontSize: 15.sp, fontWeight: FontWeight.w400)),
               ),
               SizedBox(
                 height: 1.h,
               ),
-        
+
               widget.answer.imageUrl != ""
                   ? InkWell(
                       onTap: () {
@@ -100,6 +101,7 @@ class _AnswerDetailState extends State<AnswerDetail> {
                 height: 2.h,
               ),
               AnswerCard(
+                voteBlocMap: widget.voteBlocAnswerMap,
                 showImage: false,
                 answer: widget.answer,
                 descriptionLength: widget.answer.description.length,
@@ -135,8 +137,8 @@ class _AnswerDetailState extends State<AnswerDetail> {
             ],
           )),
         ),
-        bottomSheet: bottomTextField(
-            "Add Reply", context, replyTextEditingController, onReplySubmitted));
+        bottomSheet: bottomTextField("Add Reply", context,
+            replyTextEditingController, onReplySubmitted));
   }
 
   Widget repliesSection(BuildContext context) {
@@ -165,37 +167,37 @@ class _AnswerDetailState extends State<AnswerDetail> {
                         Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ReplyCard(
+                              voteBlocMap: voteBlocMap,
                               reply: state.replies[index],
                             )),
                       ],
                     ));
           } else {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: NoDataReload(
-                    height: 20.h,
-                    onPressed: () {
-                      BlocProvider.of<GetRepliesBloc>(context).add(
-                          GetReplies(widget.answer.answerId.toString(), true));
-                    },
-                  ),
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: NoDataReload(
+                  height: 20.h,
+                  onPressed: () {
+                    BlocProvider.of<GetRepliesBloc>(context).add(
+                        GetReplies(widget.answer.answerId.toString(), true));
+                  },
                 ),
-              ],
+              ),
             );
           }
         },
       ),
     );
   }
+
   onReplySubmitted() {
     if (replyTextEditingController.text == '') {
       return;
     }
     BlocProvider.of<AddDiscussionBloc>(context).add(AddDiscussion(
         id: widget.answer.answerId.toString(),
-        body: replyTextEditingController.text,isQuestion: false));
+        body: replyTextEditingController.text,
+        isQuestion: false));
   }
 }

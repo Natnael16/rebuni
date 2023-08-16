@@ -18,6 +18,7 @@ class QuestionModel extends Question {
     required int numberOfDiscussions,
     required bool isAnonymous,
     required List<String> categories,
+    required int userReaction
   
   }) : super(
           questionId: questionId,
@@ -33,7 +34,8 @@ class QuestionModel extends Question {
           userProfile: userProfile,
           numberOfDiscussions: numberOfDiscussions,
           isAnonymous: isAnonymous,
-          categories : categories
+          categories : categories,
+          userReaction : userReaction
         );
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
@@ -49,7 +51,7 @@ class QuestionModel extends Question {
       vote: VoteModel.fromJson(json['vote']),
       numberOfViews: json['numberOfViews'],
       numberOfAnswers: json['numberOfAnswers'],
-          
+      userReaction: json['userReaction'],
       userProfile: UserProfile.fromJson(json['userProfile']),
       numberOfDiscussions: json['numberOfDiscussions'],
       isAnonymous: json['isAnonymous'],

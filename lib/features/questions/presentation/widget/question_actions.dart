@@ -1,144 +1,149 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../../../core/injections/injection_container.dart';
+import '../../../../core/utils/bloc_providers.dart';
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/images.dart';
+import '../../domain/entity/vote_type.dart';
+import '../bloc/vote_bloc/vote_bloc.dart';
+import 'icon_text_actions.dart';
+import 'like_dislike_action.dart';
 
-Widget actionsSection(
-  TextTheme textTheme, {
-  required int upvoteCount,
-  required int downvoteCount,
-   int? numberOfAnswers,
-   int? numberOfDiscussions,
-   int? numberOfReplies,
-}) {
-  return SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: white,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Row(
-            children: [
-              iconTextAction(
-                textTheme,
-                const Icon(Icons.thumb_up_outlined, color: primaryColor),
-                upvoteCount.toString(),
-                () {},
-                const Key('thumbUpIcon'),
-              ),
-              Container(height: 30, width: 2, color: containerBackgroundColor),
-              iconTextAction(
-                textTheme,
-                const Icon(Icons.thumb_down_outlined, color: primaryColor),
-                downvoteCount.toString(),
-                () {},
-                const Key('thumbDownIcon'),
-              ),
-            ],
-          ),
-        ),
-        numberOfAnswers != null ? iconTextAction(
-          textTheme,
-          SvgPicture.asset(
-            answerIconImage,
-            height: 2.5.h,
-            width: 23,
-            color: primaryColor,
-          ),
-          numberOfAnswers.toString(),
-          () {},
-          const Key('answerIcon'),
-        ) : const SizedBox(),
+class ActionsSection extends StatelessWidget {
+  final int upvoteCount;
+  final int downvoteCount;
+  final int? numberOfAnswers;
+  final int? numberOfDiscussions;
+  final int? numberOfReplies;
+  final dynamic id;
+  final int? userReaction;
+  final String table;
+  final Map<String, VoteBloc> voteBlocMap;
+  void Function()? onAnswerPressed;
+  void Function()? onDiscussionPressed;
+  void Function()? onBookmarkPressed;
+  void Function()? onReplyPressed;
 
-        numberOfDiscussions != null ?iconTextAction(
-          textTheme,
-          const Icon(
-            Icons.question_answer_outlined,
-            color: primaryColor,
-          ),
-          numberOfDiscussions.toString(),
-          () {},
-          const Key('questionAnswerIcon'),
-        ) : const SizedBox(),
-        numberOfReplies != null
-            ? iconTextAction(
-                textTheme,
-                const Icon(
-                  Icons.reply_rounded,
-                  color: primaryColor,
-                ),
-                numberOfReplies.toString(),
-                () {},
-                const Key('questionAnswerIcon'),
-              )
-            : const SizedBox(),
+  ActionsSection(
+      {super.key,
+      required this.upvoteCount,
+      required this.downvoteCount,
+      this.numberOfAnswers,
+      this.numberOfDiscussions,
+      this.numberOfReplies,
+      required this.id,
+      required this.table,
+      this.userReaction,
+      required this.voteBlocMap,
+      this.onAnswerPressed,
+      this.onDiscussionPressed,
+      this.onReplyPressed,
+      this.onBookmarkPressed,
+      });
 
-        iconTextAction(
-          textTheme,
-          const Icon(
-            Icons.bookmark_border,
-            color: primaryColor,
+  @override
+  Widget build(BuildContext context) {
+    var textTheme = Theme.of(context).textTheme;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: BlocProvider(
+              create: (context) => getBloc(id),
+              child: LikeDislikeButton(
+                  initialDislikeCount: downvoteCount,
+                  initialLikeCount: upvoteCount,
+                  currentVote: userReaction == 1
+                      ? VoteType.Like
+                      : userReaction == 2
+                          ? VoteType.Dislike
+                          : VoteType.None,
+                  table: table,
+                  id: id.toString()),
+            ),
           ),
-          '',
-          () {},
-          const Key('bookmarkIcon'),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget iconTextAction(
-  TextTheme textTheme,
-  Widget icon,
-  String text,
-  void Function()? onPressed,
-  Key key,
-) {
-  return Container(
-    margin: EdgeInsets.only(left: 1.w, right: 1.w),
-    decoration: BoxDecoration(
-      color: white,
-      borderRadius: BorderRadius.circular(15),
-    ),
-    key: key,
-    child: Row(
-      children: [
-        TextButton(
-          onPressed: onPressed,
-          child: Row(
-            children: [
-              icon,
-              SizedBox(width: 1.w),
-              (text != '')
-                  ? Text(
-                      formatNumber(int.parse(text)),
-                      style: textTheme.labelSmall!.copyWith(
-                        color: black,
-                        fontSize: 14.sp,
-                      ),
-                    )
-                  : const SizedBox(),
-            ],
+          numberOfAnswers != null
+              ? iconTextAction(
+                  textTheme,
+                  SvgPicture.asset(
+                    answerIconImage,
+                    height: 2.5.h,
+                    width: 23,
+                    color: greyIconColor,
+                  ),
+                  numberOfAnswers.toString(),
+                  onAnswerPressed,
+                )
+              : const SizedBox(),
+          numberOfDiscussions != null
+              ? iconTextAction(
+                  textTheme,
+                  const Icon(
+                    Icons.question_answer_outlined,
+                    color: greyIconColor,
+                  ),
+                  numberOfDiscussions.toString(),
+                  onDiscussionPressed,
+                )
+              : const SizedBox(),
+          numberOfReplies != null
+              ? iconTextAction(
+                  textTheme,
+                  const Icon(
+                    Icons.reply_rounded,
+                    color: greyIconColor,
+                  ),
+                  numberOfReplies.toString(),
+                  onReplyPressed
+,
+                )
+              : const SizedBox(),
+          iconTextAction(
+            textTheme,
+            const Icon(
+              Icons.bookmark_border,
+              color: greyIconColor,
+            ),
+            '',
+            onBookmarkPressed,
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-String formatNumber(int number) {
-  if (number < 1000) {
-    return number.toString();
-  } else if (number < 1000000) {
-    double result = number / 1000;
-    return '${result.toStringAsFixed(result.truncateToDouble() == result ? 0 : 1)}k';
+        ],
+      ),
+    );
   }
-  return number.toString();
+
+  VoteBloc getBloc(id) {
+    {
+      if (voteBlocMap.containsKey(id.toString())) {
+        return voteBlocMap[id.toString()]!;
+      } else {
+        VoteBloc voteBloc = VoteBloc(
+          getIt(),
+          initUpvoteCount: upvoteCount,
+          initDownvoteCount: downvoteCount,
+          initCurrentVote: userReaction == 1
+              ? VoteType.Like
+              : userReaction == 2
+                  ? VoteType.Dislike
+                  : VoteType.None,
+          initPreviousVote: userReaction == 1
+              ? VoteType.Like
+              : userReaction == 2
+                  ? VoteType.Dislike
+                  : VoteType.None,
+        );
+        voteBlocMap[id.toString()] = voteBloc;
+        return voteBloc;
+      }
+    }
+  }
 }

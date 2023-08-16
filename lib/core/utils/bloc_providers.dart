@@ -15,6 +15,7 @@ import '../../features/questions/presentation/bloc/image_picker_bloc/image_picke
 import '../../features/questions/presentation/bloc/post_question_bloc/questions_bloc.dart';
 import '../injections/injection_container.dart';
 
+
 List<BlocProvider> getAllBlocProviders() {
   return [
     BlocProvider<SignInBloc>(create: (_) => getIt<SignInBloc>()),
@@ -33,7 +34,7 @@ List<BlocProvider> getAllBlocProviders() {
     BlocProvider<GetRepliesBloc>(create: (_) => getIt<GetRepliesBloc>()),
     BlocProvider<AddDiscussionBloc>(create: (_) => getIt<AddDiscussionBloc>()),
     BlocProvider<AddAnswerBloc>(create: (_) => getIt<AddAnswerBloc>()),
-
+    
     
   ];
 }

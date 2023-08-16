@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:rebuni/features/questions/domain/entity/answer.dart';
 import 'package:rebuni/features/questions/domain/entity/discussion.dart';
 import 'package:rebuni/features/questions/domain/entity/question.dart';
@@ -12,6 +13,8 @@ import '../datasource/questions_supabase_datasource.dart';
 
 class QuestionsRepositoryImpl implements QuestionsRepository {
   final SupabaseQuestionsDataSource questionsDataSource;
+  InternetConnectionChecker checker = InternetConnectionChecker();
+
 
   QuestionsRepositoryImpl(this.questionsDataSource);
 
@@ -109,9 +112,12 @@ class QuestionsRepositoryImpl implements QuestionsRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
-  
+
   @override
-  Future<Either<Failure, bool>> postAnswer({required String questionId, required String description, File? image}) async {
+  Future<Either<Failure, bool>> postAnswer(
+      {required String questionId,
+      required String description,
+      File? image}) async {
     try {
       final bool result = await questionsDataSource.postAnswer(
         questionId: questionId,
@@ -125,5 +131,28 @@ class QuestionsRepositoryImpl implements QuestionsRepository {
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
-  }   
+  }
+
+  @override
+  Future<Either<Failure, bool>> addVote(
+      {required String id,
+      required bool voteType,
+      required String table}) async {
+    if (!await checker.hasConnection) {
+      return const Left(NetworkFailure('No Internet connection'));
+    }
+    try {
+      final bool result = await questionsDataSource.addVote(
+        id: id,
+        voteType: voteType,
+        table: table,
+      );
+      if (!result) {
+        throw Exception("Failed to vote");
+      }
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }
