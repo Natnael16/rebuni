@@ -12,6 +12,7 @@ class Answer {
   final String questionId;
   final bool isAnsweredForUser;
   final int numberOfReplies;
+  final int userReaction;
 
   Answer(
       {required this.answerId,
@@ -23,7 +24,8 @@ class Answer {
       required this.imageUrl,
       required this.questionId,
       required this.isAnsweredForUser,
-      required this.numberOfReplies});
+      required this.numberOfReplies,
+      required this.userReaction});
 
   Map<String, dynamic> toJson() {
     return {

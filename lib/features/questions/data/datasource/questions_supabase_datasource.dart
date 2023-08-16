@@ -33,6 +33,9 @@ abstract class SupabaseQuestionsDataSource {
     required String description,
     File? image,
   });
+
+  Future<bool> addVote(
+      {required String id, required bool voteType, required String table});
 }
 
 class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
@@ -106,56 +109,42 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
           (questionData['categories'] as List<dynamic>)
               .map((elem) => elem as String)
               .toList();
-      final String? voteId = questionData['vote_id'];
+      // final String? voteId = questionData['vote_id'];
+      final int numberOfUpvotes = questionData['upvotes'] as int;
+      final int numberOfDownvotes = questionData['downvotes'] as int;
 
-      // Create a dummy vote if vote_id is null
-      VoteModel vote;
-      if (voteId == null) {
-        vote = VoteModel(
-          voteId: '',
-          upvote: 0,
-          downvote: 0,
-          createdAt: DateTime.now(),
-        );
-      } else {
-        // Get the actual vote data from your Supabase table or API
-        final voteData = await getVoteData(voteId);
-        vote = VoteModel.fromJson(voteData);
-      }
+      VoteModel vote = VoteModel(
+        upvote: numberOfUpvotes,
+        downvote: numberOfDownvotes,
+      );
+
+      int userReaction = await getUserReaction("question", questionId);
 
       UserProfile userProfile =
           await getUserProfile(userId); // Fetch user profile based on userId
 
       final question = QuestionModel(
-          title: title,
-          description: description,
-          questionId: questionId.toString(),
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          imageUrl: imageUrl,
-          isClosed: isClosed,
-          numberOfViews: numberOfViews,
-          vote: vote,
-          categories: categories,
-          numberOfAnswers: numberOfAnswers,
-          numberOfDiscussions: numberOfDiscussions,
-          userProfile: userProfile,
-          isAnonymous: isAnonymous);
+        title: title,
+        description: description,
+        questionId: questionId.toString(),
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        imageUrl: imageUrl,
+        isClosed: isClosed,
+        numberOfViews: numberOfViews,
+        vote: vote,
+        categories: categories,
+        numberOfAnswers: numberOfAnswers,
+        numberOfDiscussions: numberOfDiscussions,
+        userProfile: userProfile,
+        isAnonymous: isAnonymous,
+        userReaction: userReaction,
+      );
 
       questions.add(question);
     }
 
     return questions;
-  }
-
-  Future<Map<String, dynamic>> getVoteData(String voteId) async {
-    final response = await supabaseClient
-        .from('votes')
-        .select()
-        .eq('vote_id', voteId)
-        .single();
-
-    return response as Map<String, dynamic>;
   }
 
   Future<UserProfile> getUserProfile(String userId) async {
@@ -184,20 +173,19 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
         .eq('question_id', questionId);
 
     final answerList = response as List<dynamic>;
+
     if (answerList.isEmpty) {
       throw Exception("Answers not found");
     }
 
     List<Future<AnswerModel>> answers = answerList.map((answer) async {
-      answer['vote'] = answer['vote_id'] != null
-          ? await getVoteData(answer['vote_id'])
-          : {
-              'voteId': '0',
-              'createdAt': DateTime.now().toIso8601String(),
-              'upvote': 0,
-              'downvote': 0,
-            };
+      answer['vote'] = {
+        'upvote': answer['upvotes'],
+        'downvote': answer['downvotes'],
+      };
       answer['user_profile'] = await getUserProfile(answer['user_id']);
+      int userReaction = await getUserReaction("answer", answer['answer_id']);
+      answer['user_reaction'] = userReaction;
       return AnswerModel.fromJson(answer);
     }).toList();
 
@@ -219,15 +207,14 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
 
     List<Future<DiscussionModel>> discussions =
         discussionList.map((discussion) async {
-      discussion['vote'] = discussion['vote_id'] != null
-          ? await getVoteData(discussion['vote_id'])
-          : {
-              'voteId': '0',
-              'createdAt': DateTime.now().toIso8601String(),
-              'upvote': 0,
-              'downvote': 0,
-            };
+      discussion['vote'] = {
+        'upvote': discussion['upvotes'],
+        'downvote': discussion['downvotes'],
+      };
       discussion['user_profile'] = await getUserProfile(discussion['user_id']);
+      int userReaction =
+          await getUserReaction("discussion", discussion['discussion_id']);
+      discussion['user_reaction'] = userReaction;
       return DiscussionModel.fromJson(discussion);
     }).toList();
 
@@ -236,9 +223,12 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
 
   @override
   Future<List<ReplyModel>> getReplies(String id, bool isAnswer) async {
-    final response = await supabaseClient.from('replys').select().eq(
-        isAnswer ? 'answer_id' : 'discussion_id',
-        isAnswer ? int.parse(id) : id).order('created_at', ascending: false);
+    final response = await supabaseClient
+        .from('replys')
+        .select()
+        .eq(isAnswer ? 'answer_id' : 'discussion_id',
+            isAnswer ? int.parse(id) : id)
+        .order('created_at', ascending: false);
 
     final replyList = response as List<dynamic>;
     if (replyList.isEmpty) {
@@ -246,15 +236,14 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
     }
 
     List<Future<ReplyModel>> replies = replyList.map((reply) async {
-      reply['vote'] = reply['vote_id'] != null
-          ? await getVoteData(reply['vote_id'])
-          : {
-              'voteId': '0',
-              'createdAt': DateTime.now().toIso8601String(),
-              'upvote': 0,
-              'downvote': 0,
-            };
+      reply['vote'] = {
+        'upvote': reply['upvotes'],
+        'downvote': reply['downvotes'],
+      };
       reply['user_profile'] = await getUserProfile(reply['user_id']);
+      int userReaction = await getUserReaction("reply", reply['reply_id']);
+      reply['user_reaction'] = userReaction;
+
       return ReplyModel.fromJson(reply);
     }).toList();
 
@@ -270,7 +259,6 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
             ? 'question_id'
             : integerId == null
                 ? "discussion_id"
-
                 : 'answer_id': id,
         'body': body,
         'user_id': supabaseClient.auth.currentUser!.id
@@ -286,9 +274,12 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
       return false;
     }
   }
-  
+
   @override
-  Future<bool> postAnswer({required String questionId, required String description, File? image}) async {
+  Future<bool> postAnswer(
+      {required String questionId,
+      required String description,
+      File? image}) async {
     try {
       // Upload the file to Cloudinary
       String? imageUrl = image != null
@@ -311,6 +302,69 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
     } catch (e) {
       print(e);
       return false;
+    }
+  }
+
+  @override
+  Future<bool> addVote(
+      {required String id,
+      required bool voteType,
+      required String table}) async {
+    try {
+      var result = await supabaseClient
+          .from('user_vote')
+          .select()
+          .eq('user_id', supabaseClient.auth.currentUser!.id)
+          .eq('${table}_id', id) as List<dynamic>;
+
+      if (result.isEmpty) {
+        //when no result found insert
+        var insertResult = await supabaseClient.from('user_vote').insert({
+          "${table}_id": id,
+          'user_id': supabaseClient.auth.currentUser!.id,
+          'vote_type': voteType,
+        });
+        if (insertResult != null) return false;
+      } else {
+        final vote = result[0];
+        final updateBody = {
+          'user_vote_id': vote['user_vote_id'],
+          "${table}_id": id,
+          'user_id': supabaseClient.auth.currentUser!.id,
+          'vote_type': voteType,
+        };
+        var updateResult = await supabaseClient
+            .from('user_vote')
+            .update(updateBody)
+            .eq('user_vote_id', vote['user_vote_id']);
+
+        if (updateResult != null) return false;
+      }
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<int> getUserReaction(table, id) async {
+    // Your code to retrieve the user's vote based on user_id and other conditions
+    var result = await supabaseClient
+        .from('user_vote')
+        .select('vote_type')
+        .eq('user_id', supabaseClient.auth.currentUser!.id)
+        .eq('${table}_id', id) as List<dynamic>;
+
+    if (result.isEmpty) {
+      return 0;
+    }
+    var vote = result[0];
+    if (vote['vote_type'] == null) {
+      return 0; // User hasn't voted
+    } else if (vote['vote_type'] == true) {
+      return 1; // User has upvoted
+    } else {
+      return 2; // User has downvoted or voted false
     }
   }
 }

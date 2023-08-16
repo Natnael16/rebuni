@@ -33,5 +33,11 @@ abstract class QuestionsRepository {
     required String description,
     File? image,
   });
+
+  Future<Either<Failure, bool>> addVote(
+      {required  String id,
+  required bool voteType,
+  required String table,});
+  
   
 }

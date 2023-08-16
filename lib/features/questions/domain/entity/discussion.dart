@@ -14,6 +14,7 @@ class Discussion extends Equatable {
   final int numberOfReplies;
   final String questionId;
   final String postId;
+  final int userReaction;
 
   const Discussion({
     required this.discussionId,
@@ -26,6 +27,7 @@ class Discussion extends Equatable {
     required this.numberOfReplies,
     required this.postId,
     required this.questionId,
+    required this.userReaction
   });
 
   Map<String, dynamic> toJson() {

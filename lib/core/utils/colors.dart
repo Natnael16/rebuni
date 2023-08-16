@@ -9,6 +9,7 @@ const containerBackgroundColor = Color(0xFFF9F9F9);
 const answeredYellow = Color(0xFFFFC753);
 const textFieldGrayColor = Color(0xFFA8A8A8);
 const blackTextColor = Color(0x8A000000);
+const greyIconColor = Color.fromARGB(255, 102, 99, 99);
 final letterColors = {
   '1': const Color(0xFF81C784), // Green
   '2': const Color(0xFF64B5F6), // Blue

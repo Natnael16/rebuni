@@ -7,13 +7,16 @@ import '../../../../core/shared_widgets/shimmer.dart';
 import '../../domain/entity/discussion.dart';
 import '../bloc/add_discussion_bloc/add_discussion_bloc.dart';
 import '../bloc/get_replies_bloc/get_replies_bloc.dart';
+import '../bloc/vote_bloc/vote_bloc.dart';
 import '../widget/bottom_text_field.dart';
 import '../widget/discussion_card.dart';
 import '../widget/reply_card.dart';
 
 class DiscussionDetail extends StatefulWidget {
   Discussion discussion;
-  DiscussionDetail({super.key, required this.discussion});
+  Map<String, VoteBloc> voteBlocDiscussionMap;
+
+  DiscussionDetail({super.key, required this.discussion, required this.voteBlocDiscussionMap});
 
   @override
   State<DiscussionDetail> createState() => _DiscussionDetailState();
@@ -21,7 +24,7 @@ class DiscussionDetail extends StatefulWidget {
 
 class _DiscussionDetailState extends State<DiscussionDetail> {
   final replyTextEditingController = TextEditingController();
-
+  Map<String, VoteBloc> voteBlocMap = {};
   @override
   initState() {
     BlocProvider.of<GetRepliesBloc>(context)
@@ -42,8 +45,8 @@ class _DiscussionDetailState extends State<DiscussionDetail> {
         appBar: AppBar(),
         body: RefreshIndicator(
           onRefresh: () async {
-            BlocProvider.of<GetRepliesBloc>(context)
-        .add(GetReplies(widget.discussion.discussionId.toString(), false));
+            BlocProvider.of<GetRepliesBloc>(context).add(
+                GetReplies(widget.discussion.discussionId.toString(), false));
           },
           child: SingleChildScrollView(
               child: Column(
@@ -51,8 +54,9 @@ class _DiscussionDetailState extends State<DiscussionDetail> {
               SizedBox(
                 height: 1.h,
               ),
-        
+
               DiscussionCard(
+                  voteBlocMap: widget.voteBlocDiscussionMap,
                   discussion: widget.discussion,
                   descriptionLength: widget.discussion.description.length),
               SizedBox(
@@ -75,7 +79,7 @@ class _DiscussionDetailState extends State<DiscussionDetail> {
                   listener: (context, state) {
                     if (state is AddDiscussionSuccess) {
                       BlocProvider.of<GetRepliesBloc>(context).add(GetReplies(
-                            widget.discussion.discussionId.toString(), false));
+                          widget.discussion.discussionId.toString(), false));
                       setState(() {
                         replyTextEditingController.text = '';
                       });
@@ -116,6 +120,7 @@ class _DiscussionDetailState extends State<DiscussionDetail> {
                         Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ReplyCard(
+                              voteBlocMap: voteBlocMap,
                               reply: state.replies[index],
                             )),
                       ],

@@ -13,7 +13,9 @@ class ReplyModel extends Reply {
     required String description,
     required VoteModel vote,
     required UserProfile userProfile,
+    required int userReaction,
   }) : super(
+
           answerId : answerId,
           discussionId: discussionId,
           replyId: replyId,
@@ -22,6 +24,7 @@ class ReplyModel extends Reply {
           description: description,
           vote: vote,
           userProfile: userProfile,
+          userReaction: userReaction
         );
 
   factory ReplyModel.fromJson(Map<String, dynamic> json) {
@@ -34,6 +37,7 @@ class ReplyModel extends Reply {
       description: json['body'],
       vote: VoteModel.fromJson(json['vote']),
       userProfile: json['user_profile'],
+      userReaction: json['user_reaction'],
     );
   }
 

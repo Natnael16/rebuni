@@ -51,20 +51,20 @@ class AppRouter extends StatelessWidget {
             path: path.questionDetail,
             builder: (BuildContext context, GoRouterState state) {
               var extra = state.extra as Map<String, dynamic>;
-              return QuestionDetail(question: extra['question']);
+              return QuestionDetail(question: extra['question'], tabIndex: extra['tabIndex'],);
             }),
         GoRoute(
             path: path.answerDetail,
             builder: (BuildContext context, GoRouterState state) {
               var extra = state.extra as Map<String, dynamic>;
               return AnswerDetail(
-                  answer: extra['answer'], question: extra['question']);
+                  answer: extra['answer'], question: extra['question'], voteBlocAnswerMap: extra['voteBlocAnswerMap']);
             }),
         GoRoute(
             path: path.discussionDetail,
             builder: (BuildContext context, GoRouterState state) {
               var extra = state.extra as Map<String, dynamic>;
-              return DiscussionDetail(discussion: extra['discussion']);
+              return DiscussionDetail(discussion: extra['discussion'], voteBlocDiscussionMap: extra['voteBlocDiscussionMap']);
             }),
         GoRoute(
             path: path.addAnswer,

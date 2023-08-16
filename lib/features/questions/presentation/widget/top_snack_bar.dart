@@ -52,7 +52,7 @@ class TopSnackBar extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(
-                error ? Icons.sms_failed : Icons.check_circle_outline,
+                error ? Icons.cancel_outlined : Icons.check_circle_outline,
                 color: Colors.white,
               ),
             ),
