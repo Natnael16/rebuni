@@ -155,4 +155,36 @@ class QuestionsRepositoryImpl implements QuestionsRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+  
+  @override
+  Future<Either<Failure, List<dynamic>>> searchTables({required String term, required String table, required String sortBy, required List<String> categories, File? image}) async {
+    try {
+      final List<dynamic> result =
+          await questionsDataSource.searchTables(
+          term: term,
+          table: table,
+          sortBy: sortBy,
+          categories: categories);
+      ;
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, dynamic>> getTableById(String table, id) async {
+    if (!await checker.hasConnection) {
+      return const Left(NetworkFailure('No Internet connection'));
+    }
+    try {
+      final dynamic result = await questionsDataSource.getTableById(
+          table,id);
+      ;
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+
+  }
 }

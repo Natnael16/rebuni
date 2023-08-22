@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../../../core/injections/injection_container.dart';
-import '../../../../core/utils/bloc_providers.dart';
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/images.dart';
 import '../../domain/entity/vote_type.dart';

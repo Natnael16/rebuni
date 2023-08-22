@@ -7,14 +7,11 @@ import '../../../../core/routes/paths.dart' as path;
 import '../../../../core/shared_widgets/custom_loading_widget.dart';
 import '../../../../core/shared_widgets/no_data_reload.dart';
 import '../../../../core/utils/colors.dart';
-import '../../../../core/utils/images.dart';
 import '../../domain/entity/question.dart';
 import '../bloc/get_questions_bloc/get_questions_bloc.dart';
 import '../bloc/vote_bloc/vote_bloc.dart';
-import '../widget/bottom_navbar_item.dart';
 import '../widget/question_actions.dart';
 import '../widget/question_card.dart';
-import './ask_question.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,39 +32,13 @@ class _HomePageState extends State<HomePage> {
 
   List<Question> questions = [];
   var tabIndex = 0;
-  int _currentIndex = 0;
   final PageController _pageController = PageController(initialPage: 0);
   final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      drawer: const Drawer(),
-      appBar: AppBar(backgroundColor: white, actions: [
-        InkWell(
-          onTap: () {
-            showDialog(
-                context: context, builder: (context) => const AskQuestion());
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.5.h),
-            decoration: BoxDecoration(
-                color: primaryColor, borderRadius: BorderRadius.circular(20)),
-            child: Row(
-              children: [
-                Text("Ask", style: textTheme.bodySmall!.copyWith(color: white)),
-                SizedBox(width: 1.w),
-                const Icon(Icons.add_sharp, color: white),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 2.w,
-        )
-      ]),
-      body: Column(children: [
+    return  Column(children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -247,40 +218,13 @@ class _HomePageState extends State<HomePage> {
                 const Flex(
                   direction: Axis.vertical,
                   children: [
-                    // Expanded(
-                    //   child: ListView.builder(
-                    //       shrinkWrap: true,
-                    //       itemCount: questions.length,
-                    //       itemBuilder: (context, index) => Padding(
-                    //             padding: const EdgeInsets.all(4.0),
-                    //             child: QuestionCard(questions[index],
-                    //                 showActions: actionsSection(
-                    //                     textTheme, questions[index], true)),
-                    //           )),
-                    // ),
+                
                   ],
                 ),
               ]),
         )
-      ]),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 10,
-        type: BottomNavigationBarType.fixed,
-        selectedFontSize: 11,
-        unselectedFontSize: 11,
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
-        items: [
-          buildBottomNavigationBarItem(
-              Icons.home, 'Home', homeIcon, primaryColor),
-          buildBottomNavigationBarItem(
-              Icons.search, 'Search', searchIcon, primaryColor),
-          buildBottomNavigationBarItem(
-              Icons.bookmark, 'Bookmark', bookmarkIcon, primaryColor),
-          buildBottomNavigationBarItem(
-              Icons.person, 'Profile', profileIcon, primaryColor),
-        ],
-      ),
+      ],
+      
     );
   }
 

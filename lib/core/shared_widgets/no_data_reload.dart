@@ -21,7 +21,9 @@ class NoDataReload extends StatelessWidget {
           height: height ?? 30.h,
           width: width ?? 15.h,
         ),
-        SizedBox(height: 5.h),
+         SizedBox(height: 3.h),
+        Text('No data found please reload.', style: Theme.of(context).textTheme.bodyMedium),
+        SizedBox(height: 3.h),
         CustomRoundButton(
             borderRadius: 4, buttonText: "Reload", onPressed: onPressed)
       ],

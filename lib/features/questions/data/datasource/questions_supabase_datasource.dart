@@ -36,6 +36,15 @@ abstract class SupabaseQuestionsDataSource {
 
   Future<bool> addVote(
       {required String id, required bool voteType, required String table});
+
+  Future<List<dynamic>> searchTables({
+    required String term,
+    required String table,
+    required String sortBy,
+    required List<String> categories,
+  });
+
+  Future<dynamic> getTableById(String table, dynamic id);
 }
 
 class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
@@ -347,7 +356,7 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
     }
   }
 
-  Future<int> getUserReaction(table, id) async {
+  Future<int> getUserReaction(String table, id) async {
     // Your code to retrieve the user's vote based on user_id and other conditions
     var result = await supabaseClient
         .from('user_vote')
@@ -365,6 +374,75 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
       return 1; // User has upvoted
     } else {
       return 2; // User has downvoted or voted false
+    }
+  }
+
+  @override
+  Future<List> searchTables(
+      {required String term,
+      required String table,
+      required String sortBy,
+      required List<String> categories}) async {
+    String conatinedByColumns = table == 'questions' ? "categories" : '';
+    String ilikeColumns =
+        '${table == 'questions' ? "title," : ""} ${table == 'discussions' || table == 'replys' ? "body" : "description"}';
+    final response = await supabaseClient
+        .from(table)
+        .select()
+        .containedBy(conatinedByColumns, categories)
+        .ilike(ilikeColumns, "%$term%")
+        .order(sortBy, ascending: false);
+    final dynamicList = response as List<dynamic>;
+    if (dynamicList.isEmpty) {
+      throw Exception("Found Nothing");
+    }
+    List<Future<dynamic>> discussions = dynamicList.map((model) async {
+      model['vote'] = {
+        'upvote': model['upvotes'],
+        'downvote': model['downvotes'],
+      };
+      String tableRepresentation = table.substring(0, table.length - 1);
+      model['user_profile'] = await getUserProfile(model['user_id']);
+      int userReaction = await getUserReaction(
+          tableRepresentation, model['${tableRepresentation}_id']);
+      model['user_reaction'] = userReaction;
+      if (table == 'discussions') {
+        return DiscussionModel.fromJson(model);
+      } else if (table == 'questions') {
+        return QuestionModel.fromJson(model);
+      } else if (table == 'answers') {
+        return AnswerModel.fromJson(model);
+      } else {
+        return ReplyModel.fromJson(model);
+      }
+    }).toList();
+
+    return await Future.wait(discussions);
+  }
+
+  @override
+  getTableById(String table, dynamic id) async {
+    final response =
+        await supabaseClient.from('${table}s').select().eq('${table}_id', id);
+    if (response.isEmpty) {
+      throw Exception("Found Nothing");
+    }
+    var model = response[0];
+    print(model);
+    model['vote'] = {
+      'upvote': model['upvotes'],
+      'downvote': model['downvotes'],
+    };
+    model['user_profile'] = await getUserProfile(model['user_id']);
+    model['user_reaction'] = 0;
+    if (table == 'discussion') {
+      return DiscussionModel.fromJson(model);
+    } else if (table == 'question') {
+      return QuestionModel.fromJson(model);
+    } else if (table == 'answer') {
+      return AnswerModel.fromJson(model);
+    } else {
+      return ReplyModel.fromJson(model);
     }
   }
 }

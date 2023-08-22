@@ -13,6 +13,7 @@ import '../../features/questions/presentation/bloc/get_questions_bloc/get_questi
 import '../../features/questions/presentation/bloc/get_replies_bloc/get_replies_bloc.dart';
 import '../../features/questions/presentation/bloc/image_picker_bloc/image_picker_bloc.dart';
 import '../../features/questions/presentation/bloc/post_question_bloc/questions_bloc.dart';
+import '../../features/questions/presentation/bloc/search_bloc/search_bloc.dart';
 import '../injections/injection_container.dart';
 
 
@@ -34,6 +35,7 @@ List<BlocProvider> getAllBlocProviders() {
     BlocProvider<GetRepliesBloc>(create: (_) => getIt<GetRepliesBloc>()),
     BlocProvider<AddDiscussionBloc>(create: (_) => getIt<AddDiscussionBloc>()),
     BlocProvider<AddAnswerBloc>(create: (_) => getIt<AddAnswerBloc>()),
+    BlocProvider<SearchBloc>(create: (_) => getIt<SearchBloc>()),
     
     
   ];

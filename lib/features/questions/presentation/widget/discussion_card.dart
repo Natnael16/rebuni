@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rebuni/features/questions/presentation/widget/question_actions.dart';
 
-import '../../../../core/routes/paths.dart' as path;
 import '../../domain/entity/discussion.dart';
 import '../bloc/vote_bloc/vote_bloc.dart';
 import 'question_card.dart';
@@ -21,7 +19,6 @@ class DiscussionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
 
     return QuestionCard(discussion,
         onPressed: onPressed,

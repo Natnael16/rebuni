@@ -27,7 +27,7 @@ class _SplashPageState extends State<SplashPage> {
       await supabase.auth.refreshSession();
       final session = supabase.auth.currentSession;
       if (session != null) {
-        context.go(path.home);
+        context.go(path.pagesHolder);
       } else {
         context.go(path.login);
       }

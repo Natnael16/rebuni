@@ -16,33 +16,32 @@ class DiscussionModel extends Discussion {
     required String questionId,
     required int userReaction,
   }) : super(
-          discussionId: discussionId,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          description: description,
-          vote: vote,
-          userProfile: userProfile,
-          replyId: replyId,
-          numberOfReplies: numberOfReplies,
-          postId: postId,
-          questionId: questionId,
-          userReaction: userReaction
-        );
+            discussionId: discussionId,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            description: description,
+            vote: vote,
+            userProfile: userProfile,
+            replyId: replyId,
+            numberOfReplies: numberOfReplies,
+            postId: postId,
+            questionId: questionId,
+            userReaction: userReaction);
 
   factory DiscussionModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return DiscussionModel(
-      questionId: json['question_id'] ?? '',
-      discussionId: json['discussion_id'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
-      description: json['body'],
-      vote: VoteModel.fromJson(json['vote']),
-      userProfile: json['user_profile'],
-      replyId: json['reply_id'] ?? "",
-      numberOfReplies: json['number_of_replies'] as int,
-      postId: json['post_id'] ?? "",
-      userReaction : json['user_reaction']
-    );
+        questionId: json['question_id'] ?? '',
+        discussionId: json['discussion_id'] ?? '',
+        createdAt: DateTime.parse(json['created_at']),
+        updatedAt: DateTime.parse(json['updated_at']),
+        description: json['body'] ?? '',
+        vote: VoteModel.fromJson(json['vote']),
+        userProfile: json['user_profile'],
+        replyId: json['reply_id'] ?? "",
+        numberOfReplies: json['number_of_replies'] as int,
+        postId: json['post_id'] ?? "",
+        userReaction: json['user_reaction']);
   }
 
   @override

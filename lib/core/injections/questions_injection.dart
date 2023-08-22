@@ -8,6 +8,7 @@ import '../../features/questions/domain/usecase/get_discussions_usecase.dart';
 import '../../features/questions/domain/usecase/get_questions_usecase.dart';
 import '../../features/questions/domain/usecase/get_replies_usecase.dart';
 import '../../features/questions/domain/usecase/post_question_usecase.dart';
+import '../../features/questions/domain/usecase/search_tables_usecase.dart';
 import '../../features/questions/domain/usecase/vote_usecase.dart';
 import '../../features/questions/presentation/bloc/add_answer_bloc/add_answer_bloc.dart';
 import '../../features/questions/presentation/bloc/add_discussion_bloc/add_discussion_bloc.dart';
@@ -16,6 +17,7 @@ import '../../features/questions/presentation/bloc/get_discussions_bloc/get_disc
 import '../../features/questions/presentation/bloc/get_questions_bloc/get_questions_bloc.dart';
 import '../../features/questions/presentation/bloc/get_replies_bloc/get_replies_bloc.dart';
 import '../../features/questions/presentation/bloc/post_question_bloc/questions_bloc.dart';
+import '../../features/questions/presentation/bloc/search_bloc/search_bloc.dart';
 import 'injection_container.dart';
 
 Future<void> questionsInjectionInit() async {
@@ -26,6 +28,7 @@ Future<void> questionsInjectionInit() async {
   getIt.registerFactory(() => GetRepliesBloc(getIt()));
   getIt.registerFactory(() => AddDiscussionBloc(getIt()));
   getIt.registerFactory(() => AddAnswerBloc(getIt()));
+  getIt.registerFactory(() => SearchBloc(getIt()));
 
   getIt.registerLazySingleton(() => PostQuestionUseCase(getIt()));
   getIt.registerLazySingleton(() => GetQuestionsUseCase(getIt()));
@@ -35,6 +38,7 @@ Future<void> questionsInjectionInit() async {
   getIt.registerLazySingleton(() => AddDiscussionUseCase(getIt()));
   getIt.registerLazySingleton(() => PostAnswerUseCase(getIt()));
   getIt.registerLazySingleton(() => VoteUseCase(getIt()));
+  getIt.registerLazySingleton(() => SearchUseCase(getIt()));
 
   getIt.registerLazySingleton<QuestionsRepository>(() => QuestionsRepositoryImpl(getIt()));
 

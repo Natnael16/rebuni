@@ -19,13 +19,13 @@ class AnswerModel extends Answer {
   factory AnswerModel.fromJson(Map<String, dynamic> json) {
 
     return AnswerModel(
-      userReaction : json['user_reaction'],
-      numberOfReplies: json['number_of_replies'],
+      userReaction : json['user_reaction'] ?? 0,
+      numberOfReplies: json['number_of_replies'] ?? 0,
       answerId: json['answer_id'] as int,
       createdAt: DateTime.parse(json['created_at']),
       userProfile: json['user_profile'],
       updatedAt: DateTime.parse(json['updated_at']),
-      description: json['description'],
+      description: json['description'] ?? '',
       vote: VoteModel.fromJson(json['vote']),
       imageUrl: json['image_url'] ?? '',
       questionId: json['question_id'],

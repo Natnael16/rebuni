@@ -40,21 +40,21 @@ class QuestionModel extends Question {
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(
-      categories : json['categories'],
-      questionId: json['questionId'],
-      createdAt: DateTime.parse(json['createdAt']),
-      title: json['title'],
-      description: json['description'],
-      imageUrl: json['imageUrl'],
-      updatedAt: DateTime.parse(json['updatedAt']),
-      isClosed: json['isClosed'],
+      categories : (json['categories'] as List<dynamic>).map((elem) => elem as String).toList(),
+      questionId: json['question_id'],
+      createdAt: DateTime.parse(json['created_at']),
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      imageUrl: json['image_url'] ?? '',
+      updatedAt: DateTime.parse(json['updated_at']),
+      isClosed: json['is_closed'],
       vote: VoteModel.fromJson(json['vote']),
-      numberOfViews: json['numberOfViews'],
-      numberOfAnswers: json['numberOfAnswers'],
-      userReaction: json['userReaction'],
-      userProfile: UserProfile.fromJson(json['userProfile']),
-      numberOfDiscussions: json['numberOfDiscussions'],
-      isAnonymous: json['isAnonymous'],
+      numberOfViews: json['number_of_views'],
+      numberOfAnswers: json['number_of_answers'],
+      userReaction: json['user_reaction'],
+      userProfile: json['user_profile'],
+      numberOfDiscussions: json['number_of_discussions'],
+      isAnonymous: json['is_anonymous'],
     );
   }
 

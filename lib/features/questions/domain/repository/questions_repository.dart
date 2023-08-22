@@ -38,6 +38,15 @@ abstract class QuestionsRepository {
       {required  String id,
   required bool voteType,
   required String table,});
+
+  Future<Either<Failure, List<dynamic>>> searchTables({
+    required String term,
+    required String table,
+    required String sortBy,
+    required List<String> categories ,
+  });
+
+  Future<Either<Failure, dynamic>> getTableById(String table, dynamic id);
   
   
 }
