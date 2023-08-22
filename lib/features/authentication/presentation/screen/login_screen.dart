@@ -99,14 +99,14 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             SizedBox(height: 6.h),
-            ProviderButtons(
-              icon: const Icon(Icons.person_rounded, color: primaryColor),
-              buttonText: "Continue as guest",
-              onPressed: () {
-                context.push(path.home);
-              },
-            ),
-            SizedBox(height: 2.h),
+            // ProviderButtons(
+            //   icon: const Icon(Icons.person_rounded, color: primaryColor),
+            //   buttonText: "Continue as guest",
+            //   onPressed: () {
+            //     context.push(path.pagesHolder);
+            //   },
+            // ),
+            // SizedBox(height: 2.h),
             BlocConsumer<ProviderSignInBloc, ProviderSignInState>(
                 builder: (context, ProviderSignInState state) {
               return Column(

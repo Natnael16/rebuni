@@ -8,8 +8,10 @@ import '../../features/authentication/presentation/screen/splash_screen.dart';
 import '../../features/questions/presentation/screen/add_answer.dart';
 import '../../features/questions/presentation/screen/answer_detail.dart';
 import '../../features/questions/presentation/screen/ask_question.dart';
+import '../../features/questions/presentation/screen/bottom_nav_pages_holder.dart';
 import '../../features/questions/presentation/screen/discussion_detail.dart';
 import '../../features/questions/presentation/screen/homepage.dart';
+import '../../features/questions/presentation/screen/search_page.dart';
 import '../utils/theme.dart';
 import 'paths.dart' as path;
 
@@ -72,6 +74,13 @@ class AppRouter extends StatelessWidget {
               var extra = state.extra as Map<String, dynamic>;
               return AddAnswerPage(question: extra['question']);
             }),
+        GoRoute(path: path.search,
+            builder: (BuildContext context, GoRouterState state) =>
+                SearchPage()),
+        GoRoute(
+            path: path.pagesHolder,
+            builder: (BuildContext context, GoRouterState state) =>
+                const PagesHolder())
       ],
     );
   }

@@ -8,3 +8,5 @@ const questionDetail = '/questionDetail';
 const answerDetail = '/answerDetail';
 const discussionDetail = '/discussionDetail';
 const addAnswer = '/addAnswer';
+const search = '/search';
+const pagesHolder = '/pagesHolder';

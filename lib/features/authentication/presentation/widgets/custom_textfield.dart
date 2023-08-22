@@ -3,34 +3,46 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../../../core/utils/colors.dart';
 
-class CustomTextField extends StatefulWidget {
-  const CustomTextField({
-    this.isNumber = false,
-    required this.borderRadius,
-    required this.icon,
-    required this.validator,
-    Key? key,
-    required this.textEditingController, required this.hintText,
-  }) : super(key: key);
+class CustomTextFieldQuestions extends StatefulWidget {
+  CustomTextFieldQuestions(
+      {this.isNumber = false,
+      required this.borderRadius,
+      required this.icon,
+      required this.validator,
+      Key? key,
+      required this.textEditingController,
+      required this.hintText,
+      this.autofocus = false,
+      this.onTap,
+      this.suffix,
+      this.readonly = false,
+      this.color,
+      this.width})
+      : super(key: key);
 
   final double borderRadius;
-  final IconData icon;
+  double? width;
+  final Widget icon;
   final bool isNumber;
+  final Color? color;
+  final Widget? suffix;
+  final bool autofocus;
   final String hintText;
+  final bool readonly;
   final String? Function(String?) validator; // Updated validator parameter
-  final textEditingController;
+  final void Function()? onTap;
+  final TextEditingController textEditingController;
 
   @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
+  _CustomTextFieldQuestionsState createState() =>
+      _CustomTextFieldQuestionsState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
-  final FocusNode _textFieldFocusNode = FocusNode();
+class _CustomTextFieldQuestionsState extends State<CustomTextFieldQuestions> {
   String? _errorText;
 
   @override
   void dispose() {
-    _textFieldFocusNode.dispose();
     super.dispose();
   }
 
@@ -39,17 +51,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       children: [
         Container(
-          width: 85.w,
-          padding: EdgeInsets.symmetric(horizontal: (4).w),
+          width: widget.width ?? 85.w,
+          padding: EdgeInsets.only(left: (3).w, right: 2.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(widget.borderRadius),
-            color: textFieldColor,
+            color: widget.color ?? textFieldColor,
           ),
           child: TextField(
+            onTap: widget.onTap,
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall!
+                .copyWith(fontWeight: FontWeight.w500, color: black),
             keyboardType:
                 widget.isNumber ? TextInputType.phone : TextInputType.text,
             cursorColor: primaryColor,
-            focusNode: _textFieldFocusNode,
+            readOnly: widget.readonly,
+            autofocus: widget.autofocus,
             controller: widget.textEditingController,
             onChanged: (value) {
               setState(() {
@@ -57,13 +75,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
               });
             },
             decoration: InputDecoration(
-              icon: Icon(widget.icon, color: textFieldGrayColor, size: (2.5).h),
+              suffixIcon: widget.suffix,
+              icon: widget.icon,
               hintText: widget.hintText,
-              hintStyle: Theme.of(context).textTheme.labelSmall,
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .labelSmall!
+                  .copyWith(fontWeight: FontWeight.w300),
               border: InputBorder.none,
             ),
           ),
         ),
+        
         SizedBox(
           height: 2.h,
         ),

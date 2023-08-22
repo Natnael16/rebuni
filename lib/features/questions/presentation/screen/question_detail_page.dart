@@ -132,7 +132,7 @@ class _QuestionDetailState extends State<QuestionDetail> {
                   });
                 },
                 isScrollable: true, // Allow horizontal scrolling
-                tabs: ["Answers", "Discussions"].map((String tab) {
+                tabs: ["Answers", "Comments"].map((String tab) {
                   return Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 1.w, vertical: 2.h),

@@ -6,3 +6,5 @@ const String profileIcon = "assets/images/profile_icon.svg";
 const String bookmarkIcon = "assets/images/book_mark_icon.svg";
 const String homeIcon = "assets/images/home_icon.svg";
 const String searchIcon = "assets/images/search_icon.svg";
+const String textFeildSearchIcon = "assets/images/text_field_search_icon.svg";
+const String filterIcon = "assets/images/filter_icon.svg";

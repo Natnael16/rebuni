@@ -12,6 +12,7 @@ Widget profileSection(
   bool isAnonymous = false,
   required DateTime createdAt,
   void Function()? onPressed,
+  bool moreOptions = true
 }) {
   return Row(
     children: [
@@ -47,7 +48,7 @@ Widget profileSection(
         ],
       ),
       const Spacer(),
-      InkWell( onTap: onPressed,child:  const Icon(Icons.more_horiz)),
+      moreOptions ? InkWell( onTap: onPressed,child:  const Icon(Icons.more_horiz)) : const SizedBox()
     ],
   );
 }

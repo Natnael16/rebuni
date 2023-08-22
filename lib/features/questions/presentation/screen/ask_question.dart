@@ -282,7 +282,7 @@ class _AskQuestionState extends State<AskQuestion> {
   }
 
   onAskNowPressed() {
-    CategorySelectorState categoryState =
+    CategorySelectorInitial categoryState =
         BlocProvider.of<CategorySelectorBloc>(context).state;
 
     ImagePickerState imagePickerState =
@@ -292,11 +292,8 @@ class _AskQuestionState extends State<AskQuestion> {
     image =
         (imagePickerState is ImageAddedState) ? imagePickerState.image : null;
     List<String> categories;
-    if (categoryState is CategorySelectorInitial) {
-      categories = categoryState.categories;
-    } else {
-      return;
-    }
+    categories = categoryState.categories;
+    
     if (!_formKey.currentState!.validate() ||
         categoryState.categories.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
