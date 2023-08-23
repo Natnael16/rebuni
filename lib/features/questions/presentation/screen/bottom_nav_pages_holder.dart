@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-import '../../../../core/routes/paths.dart' as path;
 import '../../../../core/utils/colors.dart';
 import '../../../../core/utils/images.dart';
 import '../widget/bottom_navbar_item.dart';
 import 'ask_question.dart';
+import 'bookmark.dart';
 import 'homepage.dart';
 import 'search_page.dart';
 
@@ -18,7 +18,7 @@ class PagesHolder extends StatefulWidget {
 
 class _PagesHolderState extends State<PagesHolder> {
   int _currentIndex = 0;
-  List pages = [HomePage(), SearchPage(),SizedBox(),SizedBox()];
+  List pages = [HomePage(), SearchPage(),BookMark(),SizedBox()];
 
   @override
   Widget build(BuildContext context) {

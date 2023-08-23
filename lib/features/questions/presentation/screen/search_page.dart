@@ -14,6 +14,7 @@ import '../../../../core/shared_widgets/no_data_reload.dart';
 import '../../../../core/shared_widgets/shimmer.dart';
 import '../../../../core/utils/categories.dart';
 import '../../../../core/utils/images.dart';
+import '../../../../core/utils/vote_bloc_maps.dart';
 import '../../../authentication/presentation/widgets/custom_textfield.dart';
 import '../../data/models/answer_model.dart';
 import '../../data/models/discusion_model.dart';
@@ -25,7 +26,6 @@ import '../../domain/entity/question.dart';
 import '../../domain/entity/reply.dart';
 import '../../domain/usecase/get_table_by_id_usecase.dart';
 import '../bloc/search_bloc/search_bloc.dart';
-import '../bloc/vote_bloc/vote_bloc.dart';
 import '../widget/question_card.dart';
 import 'filter_page.dart';
 
@@ -40,7 +40,6 @@ class _SearchPageState extends State<SearchPage> {
   final searchEditingController = TextEditingController();
   final searchForController = TextEditingController(text: "Questions");
   final sortByController = TextEditingController(text: "Upvotes");
-  Map<String, VoteBloc> voteBlocDiscussionMap = {};
 
   @override
   initState() {
@@ -206,13 +205,12 @@ class _SearchPageState extends State<SearchPage> {
     final getModelById = GetTableById(getIt());
     final dartz.Either<Failure, dynamic> response = await getModelById(
         TableByIdParams(table: 'question', id: answer.questionId));
-    Map<String, VoteBloc> voteBloc = {};
     response.fold((failure) => context.pop(), (question) {
       context.pop();
       context.push(path.answerDetail, extra: {
         "question": question,
         "answer": answer,
-        "voteBlocAnswerMap": voteBloc
+        "voteBlocAnswerMap": voteBlocAnswerMap
       });
     });
   }

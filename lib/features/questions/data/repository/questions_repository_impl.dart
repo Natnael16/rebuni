@@ -9,14 +9,16 @@ import 'package:rebuni/features/questions/domain/entity/reply.dart';
 
 import '../../../../core/error/failure.dart';
 import '../../domain/repository/questions_repository.dart';
+import '../datasource/local_datasource.dart';
 import '../datasource/questions_supabase_datasource.dart';
+import '../models/question_model.dart';
 
 class QuestionsRepositoryImpl implements QuestionsRepository {
   final SupabaseQuestionsDataSource questionsDataSource;
+  final QuestionsLocalDataSource localDataSource;
   InternetConnectionChecker checker = InternetConnectionChecker();
 
-
-  QuestionsRepositoryImpl(this.questionsDataSource);
+  QuestionsRepositoryImpl(this.questionsDataSource, this.localDataSource);
 
   @override
   Future<Either<Failure, bool>> postQuestion({
@@ -50,7 +52,6 @@ class QuestionsRepositoryImpl implements QuestionsRepository {
           await questionsDataSource.getQuestions(curIndex);
       return Right(result);
     } catch (e) {
-      print('get error $e');
       return Left(ServerFailure(e.toString()));
     }
   }
@@ -155,36 +156,76 @@ class QuestionsRepositoryImpl implements QuestionsRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
-  
+
   @override
-  Future<Either<Failure, List<dynamic>>> searchTables({required String term, required String table, required String sortBy, required List<String> categories, File? image}) async {
+  Future<Either<Failure, List<dynamic>>> searchTables(
+      {required String term,
+      required String table,
+      required String sortBy,
+      required List<String> categories,
+      File? image}) async {
     try {
-      final List<dynamic> result =
-          await questionsDataSource.searchTables(
-          term: term,
-          table: table,
-          sortBy: sortBy,
-          categories: categories);
+      final List<dynamic> result = await questionsDataSource.searchTables(
+          term: term, table: table, sortBy: sortBy, categories: categories);
       ;
       return Right(result);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
-  
+
   @override
   Future<Either<Failure, dynamic>> getTableById(String table, id) async {
     if (!await checker.hasConnection) {
       return const Left(NetworkFailure('No Internet connection'));
     }
     try {
-      final dynamic result = await questionsDataSource.getTableById(
-          table,id);
+      final dynamic result = await questionsDataSource.getTableById(table, id);
       ;
       return Right(result);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
+  }
 
+  @override
+  Future<Either<Failure, List<Question>>> getBookmarks() async {
+    if (!await checker.hasConnection) {
+      try {
+        final List<Question> cachedQuestions =
+            await localDataSource.getBookmarkedQuestionsFromCache();
+        return Right(cachedQuestions);
+      } catch (e) {
+        return Left(CacheFailure(e.toString()));
+      }
+    }
+
+    try {
+      final List<QuestionModel> result =
+          await questionsDataSource.getBookmarks();
+
+      await localDataSource.cacheBookmarkedQuestions(result);
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> addBookmark(String questionId) async {
+    if (!await checker.hasConnection) {
+      return const Left(NetworkFailure('No Internet connection'));
+    }
+    try {
+      final bool result = await questionsDataSource.addBookmark(questionId);
+      if (!result) {
+        print(result);
+        return const Left(ServerFailure("Couldn't bookmark the question"));
+      }
+      return Right(result);
+    } catch (e) {
+      print(e.toString());
+      return Left(ServerFailure(e.toString()));
+    }
   }
 }

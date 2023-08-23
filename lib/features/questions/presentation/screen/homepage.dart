@@ -7,9 +7,9 @@ import '../../../../core/routes/paths.dart' as path;
 import '../../../../core/shared_widgets/custom_loading_widget.dart';
 import '../../../../core/shared_widgets/no_data_reload.dart';
 import '../../../../core/utils/colors.dart';
+import '../../../../core/utils/vote_bloc_maps.dart';
 import '../../domain/entity/question.dart';
 import '../bloc/get_questions_bloc/get_questions_bloc.dart';
-import '../bloc/vote_bloc/vote_bloc.dart';
 import '../widget/question_actions.dart';
 import '../widget/question_card.dart';
 
@@ -28,8 +28,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  Map<String, VoteBloc> voteBlocMap = {};
-
   List<Question> questions = [];
   var tabIndex = 0;
   final PageController _pageController = PageController(initialPage: 0);
@@ -38,7 +36,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return  Column(children: [
+    return Column(
+      children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -142,39 +141,59 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(4.0),
-                                          child: QuestionCard(state.questions[index],
+                                          child: QuestionCard(
+                                              state.questions[index],
                                               showActions: ActionsSection(
-                                                  onAnswerPressed: () => context
-                                                      .push(path.questionDetail,
-                                                          extra: {"question": state.questions[index], "tabIndex": 0}),
-                                                  onDiscussionPressed: () => context
-                                                          .push(path.questionDetail, extra: {
+                                                onAnswerPressed: () => context
+                                                    .push(path.questionDetail,
+                                                        extra: {
+                                                      "question": state
+                                                          .questions[index],
+                                                      "tabIndex": 0
+                                                    }),
+                                                onDiscussionPressed: () =>
+                                                    context.push(
+                                                        path.questionDetail,
+                                                        extra: {
+                                                      "question": state
+                                                          .questions[index],
+                                                      "tabIndex": 1
+                                                    }),
+                                                voteBlocMap:
+                                                    questionsVoteBlocMap,
+                                                key: Key(state.questions[index]
+                                                    .questionId),
+                                                upvoteCount: state
+                                                    .questions[index]
+                                                    .vote
+                                                    .upvote,
+                                                downvoteCount: state
+                                                    .questions[index]
+                                                    .vote
+                                                    .downvote,
+                                                numberOfAnswers: state
+                                                    .questions[index]
+                                                    .numberOfAnswers,
+                                                numberOfDiscussions: state
+                                                    .questions[index]
+                                                    .numberOfDiscussions,
+                                                table: 'question',
+                                                id: state.questions[index]
+                                                    .questionId,
+                                                userReaction: state
+                                                    .questions[index]
+                                                    .userReaction,
+                                                userBookmarked: state
+                                                    .questions[index]
+                                                    .userBookmarked,
+                                              ),
+                                              onPressed: () => context.push(
+                                                      path.questionDetail,
+                                                      extra: {
                                                         "question": state
                                                             .questions[index],
-                                                        "tabIndex": 1
-                                                      }),
-                                                  voteBlocMap: voteBlocMap,
-                                                  key: Key(state
-                                                      .questions[index]
-                                                      .questionId),
-                                                  upvoteCount: state
-                                                      .questions[index]
-                                                      .vote
-                                                      .upvote,
-                                                  downvoteCount: state
-                                                      .questions[index]
-                                                      .vote
-                                                      .downvote,
-                                                  numberOfAnswers: state
-                                                      .questions[index]
-                                                      .numberOfAnswers,
-                                                  numberOfDiscussions: state
-                                                      .questions[index]
-                                                      .numberOfDiscussions,
-                                                  table: 'question',
-                                                  id: state.questions[index].questionId,
-                                                  userReaction: state.questions[index].userReaction),
-                                              onPressed: () => context.push(path.questionDetail, extra: {"question": state.questions[index], "tabIndex": 0})),
+                                                        "tabIndex": 0
+                                                      })),
                                         ),
                                         index >= state.questions.length - 1
                                             ? Padding(
@@ -217,14 +236,11 @@ class _HomePageState extends State<HomePage> {
                 ]),
                 const Flex(
                   direction: Axis.vertical,
-                  children: [
-                
-                  ],
+                  children: [],
                 ),
               ]),
         )
       ],
-      
     );
   }
 
