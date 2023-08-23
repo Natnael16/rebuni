@@ -18,9 +18,11 @@ class QuestionModel extends Question {
     required int numberOfDiscussions,
     required bool isAnonymous,
     required List<String> categories,
-    required int userReaction
+    required int userReaction,
+    required bool userBookmarked
   
   }) : super(
+          userBookmarked: userBookmarked,
           questionId: questionId,
           createdAt: createdAt,
           title: title,
@@ -40,6 +42,7 @@ class QuestionModel extends Question {
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(
+      userBookmarked: json['user_bookmarked'],
       categories : (json['categories'] as List<dynamic>).map((elem) => elem as String).toList(),
       questionId: json['question_id'],
       createdAt: DateTime.parse(json['created_at']),
@@ -52,7 +55,7 @@ class QuestionModel extends Question {
       numberOfViews: json['number_of_views'],
       numberOfAnswers: json['number_of_answers'],
       userReaction: json['user_reaction'],
-      userProfile: json['user_profile'],
+      userProfile: json['user_profile'].runtimeType == UserProfile?json['user_profile'] : UserProfile.fromJson(json['user_profile']) ,
       numberOfDiscussions: json['number_of_discussions'],
       isAnonymous: json['is_anonymous'],
     );
@@ -60,20 +63,22 @@ class QuestionModel extends Question {
 
   Map<String, dynamic> toJson() {
     return {
+      'user_bookmarked': userBookmarked,
+      'categories': List<dynamic>.from(categories.map((elem) => elem)),
       'question_id': questionId,
       'created_at': createdAt.toIso8601String(),
       'title': title,
       'description': description,
       'image_url': imageUrl,
-      'updated_At': updatedAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
       'is_closed': isClosed,
       'vote': vote.toJson(),
       'number_of_views': numberOfViews,
       'number_of_answers': numberOfAnswers,
+      'user_reaction': userReaction,
       'user_profile': userProfile.toJson(),
       'number_of_discussions': numberOfDiscussions,
       'is_anonymous': isAnonymous,
-      'categories' : categories
     };
   }
 }

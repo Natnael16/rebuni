@@ -9,10 +9,10 @@ import '../../../../core/routes/paths.dart' as path;
 import '../../../../core/shared_widgets/no_data_reload.dart';
 import '../../../../core/shared_widgets/shimmer.dart';
 import '../../../../core/utils/colors.dart';
+import '../../../../core/utils/vote_bloc_maps.dart';
 import '../../domain/entity/question.dart';
 import '../bloc/get_answers_bloc/get_answers_bloc.dart';
 import '../bloc/get_discussions_bloc/get_discussions_bloc.dart';
-import '../bloc/vote_bloc/vote_bloc.dart';
 import '../widget/answer_card.dart';
 import '../widget/bottom_text_field.dart';
 import '../widget/custom_cached_image.dart';
@@ -31,8 +31,6 @@ class QuestionDetail extends StatefulWidget {
 }
 
 class _QuestionDetailState extends State<QuestionDetail> {
-  Map<String, VoteBloc> voteBlocAnswerMap = {};
-  Map<String, VoteBloc> voteBlocDiscussionMap = {};
   late int tabIndex;
 
   @override

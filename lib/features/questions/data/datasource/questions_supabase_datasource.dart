@@ -45,6 +45,10 @@ abstract class SupabaseQuestionsDataSource {
   });
 
   Future<dynamic> getTableById(String table, dynamic id);
+
+  Future<List<QuestionModel>> getBookmarks();
+
+  Future<bool> addBookmark(String questionId);
 }
 
 class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
@@ -128,11 +132,13 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
       );
 
       int userReaction = await getUserReaction("question", questionId);
-
+      bool userBookmarked =
+          await hasUserBookmarked(questionData['question_id']);
       UserProfile userProfile =
           await getUserProfile(userId); // Fetch user profile based on userId
 
       final question = QuestionModel(
+        userBookmarked: userBookmarked,
         title: title,
         description: description,
         questionId: questionId.toString(),
@@ -351,7 +357,6 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
       }
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }
@@ -409,6 +414,8 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
       if (table == 'discussions') {
         return DiscussionModel.fromJson(model);
       } else if (table == 'questions') {
+        model['user_bookmarked'] =
+            await hasUserBookmarked(model['question_id']);
         return QuestionModel.fromJson(model);
       } else if (table == 'answers') {
         return AnswerModel.fromJson(model);
@@ -438,11 +445,85 @@ class SupabaseQuestionsDataSourceImpl implements SupabaseQuestionsDataSource {
     if (table == 'discussion') {
       return DiscussionModel.fromJson(model);
     } else if (table == 'question') {
+      model['user_bookmarked'] = await hasUserBookmarked(model['question_id']);
+
       return QuestionModel.fromJson(model);
     } else if (table == 'answer') {
       return AnswerModel.fromJson(model);
     } else {
       return ReplyModel.fromJson(model);
+    }
+  }
+
+  @override
+  Future<List<QuestionModel>> getBookmarks() async {
+    var result = await supabaseClient
+        .from('bookmarks')
+        .select('bookmark_id, user_id, questions!inner(*)')
+        .eq('user_id', supabaseClient.auth.currentUser!.id);
+
+    if (result.isEmpty) {
+      throw Exception("No bookmarks found!");
+    }
+    final dynamicList = result as List<dynamic>;
+    List<Future<QuestionModel>> questions = dynamicList.map((bookmarks) async {
+      var question = bookmarks['questions'];
+      question['vote'] = {
+        'upvote': question['upvotes'],
+        'downvote': question['downvotes'],
+      };
+      question['user_bookmarked'] =
+          await hasUserBookmarked(question['question_id']);
+      question['user_profile'] = await getUserProfile(question['user_id']);
+      int userReaction =
+          await getUserReaction('question', question['question_id']);
+      question['user_reaction'] = userReaction;
+      QuestionModel model = QuestionModel.fromJson(question);
+      return model;
+    }).toList();
+    return await Future.wait(questions);
+  }
+
+  Future<bool> hasUserBookmarked(String questionId) async {
+    var result = await supabaseClient
+        .from('bookmarks')
+        .select()
+        .eq('user_id', supabaseClient.auth.currentUser!.id)
+        .eq('question_id', questionId);
+    if (result.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  Future<bool> addBookmark(String questionId) async {
+    var result = await supabaseClient
+        .from('bookmarks')
+        .select()
+        .eq('user_id', supabaseClient.auth.currentUser!.id)
+        .eq('question_id', questionId);
+
+    if (result.isEmpty) {
+      var createResult = await supabaseClient.from('bookmarks').insert({
+        'user_id': supabaseClient.auth.currentUser!.id,
+        'question_id': questionId,
+      });
+      if (createResult != null) {
+        throw Exception("Couldn't create bookmark!");
+      }
+      return true;
+    } else {
+      var deleteResult = await supabaseClient
+          .from('bookmarks')
+          .delete()
+          .eq('user_id', supabaseClient.auth.currentUser!.id)
+          .eq('question_id', questionId);
+
+      if (deleteResult != null) {
+        throw Exception("Couldn't delete bookmark!");
+      }
+      return true;
     }
   }
 }

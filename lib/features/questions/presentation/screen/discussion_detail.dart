@@ -4,6 +4,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../../../core/shared_widgets/no_data_reload.dart';
 import '../../../../core/shared_widgets/shimmer.dart';
+import '../../../../core/utils/vote_bloc_maps.dart';
 import '../../domain/entity/discussion.dart';
 import '../bloc/add_discussion_bloc/add_discussion_bloc.dart';
 import '../bloc/get_replies_bloc/get_replies_bloc.dart';
@@ -24,7 +25,6 @@ class DiscussionDetail extends StatefulWidget {
 
 class _DiscussionDetailState extends State<DiscussionDetail> {
   final replyTextEditingController = TextEditingController();
-  Map<String, VoteBloc> voteBlocMap = {};
   @override
   initState() {
     BlocProvider.of<GetRepliesBloc>(context)
@@ -120,7 +120,7 @@ class _DiscussionDetailState extends State<DiscussionDetail> {
                         Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: ReplyCard(
-                              voteBlocMap: voteBlocMap,
+                              voteBlocMap: repliesVoteBlocMap,
                               reply: state.replies[index],
                             )),
                       ],

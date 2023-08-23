@@ -41,12 +41,12 @@ class UserProfile extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'userProfileId': userProfileId,
-      'createdAt': createdAt.toIso8601String(),
-      'userId': userId,
+      'user_id': userId,
+      'user_profile_id': userProfileId,
+      'full_name': fullName,
+      'created_at': createdAt.toIso8601String(),
+      'profile_picture': profilePicture,
       'bio': bio,
-      'profilePicture': profilePicture,
-      'fullName': fullName,
       'followers': followers,
       'followings': followings,
     };

@@ -23,6 +23,7 @@ class _SplashPageState extends State<SplashPage> {
     if (!mounted) {
       return;
     }
+    
     try {
       await supabase.auth.refreshSession();
       final session = supabase.auth.currentSession;

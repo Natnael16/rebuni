@@ -34,19 +34,24 @@ abstract class QuestionsRepository {
     File? image,
   });
 
-  Future<Either<Failure, bool>> addVote(
-      {required  String id,
-  required bool voteType,
-  required String table,});
+  Future<Either<Failure, bool>> addVote({
+    required String id,
+    required bool voteType,
+    required String table,
+  });
 
   Future<Either<Failure, List<dynamic>>> searchTables({
     required String term,
     required String table,
     required String sortBy,
-    required List<String> categories ,
+    required List<String> categories,
   });
 
   Future<Either<Failure, dynamic>> getTableById(String table, dynamic id);
-  
-  
+
+  Future<Either<Failure, List<Question>>> getBookmarks();
+
+  Future<Either<Failure, bool>> addBookmark(String questionId);
+
+
 }
